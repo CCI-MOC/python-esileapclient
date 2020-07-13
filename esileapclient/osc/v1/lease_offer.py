@@ -105,13 +105,11 @@ class ListLeaseOffer(command.Lister):
             default=False,
             help="Show detailed information about the offers.",
             action='store_true')
-
         parser.add_argument(
             '--status',
             dest='status',
             required=False,
             help="Show all offers with given status.")
-
         parser.add_argument(
             '--time-range',
             dest='time_range',
@@ -122,7 +120,6 @@ class ListLeaseOffer(command.Lister):
                  "Must pass in two valid datetime strings."
                  "Example: --time-range 2020-06-30T00:00:00"
                  "2021-06-30T00:00:00")
-
         parser.add_argument(
             '--availability-range',
             dest='availability_range',
@@ -134,19 +131,16 @@ class ListLeaseOffer(command.Lister):
                  "strings."
                  "Example: --availability-range 2020-06-30T00:00:00"
                  "2021-06-30T00:00:00")
-
         parser.add_argument(
             '--project-id',
             dest='project_id',
             required=False,
             help="Show all offers owned by given project id.")
-
         parser.add_argument(
             '--resource-type',
             dest='resource_type',
             required=False,
             help="Show all offers with given resource-type.")
-
         parser.add_argument(
             '--resource-uuid',
             dest='resource_uuid',

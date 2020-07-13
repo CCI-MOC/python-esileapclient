@@ -99,25 +99,21 @@ class ListLeaseContract(command.Lister):
             default=False,
             help="Show detailed information about the contracts.",
             action='store_true')
-
         parser.add_argument(
             '--all',
             default=False,
             help="Show all contracts in the database. For admin use only.",
             action='store_true')
-
         parser.add_argument(
             '--status',
             dest='status',
             required=False,
             help="Show all contracts with given status.")
-
         parser.add_argument(
             '--offer-uuid',
             dest='offer_uuid',
             required=False,
             help="Show all contracts with given offer_uuid.")
-
         parser.add_argument(
             '--time-range',
             dest='time_range',
@@ -128,17 +124,17 @@ class ListLeaseContract(command.Lister):
                  "Must pass in two valid datetime strings."
                  "Example: --time-range 2020-06-30T00:00:00"
                  "2021-06-30T00:00:00")
-
         parser.add_argument(
             '--project-id',
             dest='project_id',
             required=False,
             help="Show all contracts owned by given project id.")
-
         parser.add_argument(
             '--owner',
             dest='owner',
             required=False,
+            const='self',
+            nargs='?',
             help="Show all contracts relevant to an offer owner "
                  "by the owner's project_id.")
 
