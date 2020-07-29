@@ -138,6 +138,8 @@ class ListLeaseContract(command.Lister):
             '--owner',
             dest='owner',
             required=False,
+            const='self',
+            nargs='?',
             help="Show all contracts relevant to an offer owner "
                  "by the owner's project_id.")
 
