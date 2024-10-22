@@ -162,7 +162,7 @@ class ListLease(command.Lister):
                  "which intersect with the given range."
                  "Must pass in two valid datetime strings."
                  "Example: --time-range 2020-06-30T00:00:00"
-                 "2021-06-30T00:00:00")
+                 " 2021-06-30T00:00:00")
         parser.add_argument(
             '--project',
             dest='project_id',
