@@ -33,6 +33,12 @@ class CreateConsoleAuthToken(command.ShowOne):
             "node_uuid_or_name",
             metavar="<node_uuid_or_name>",
             help="Node UUID or name")
+        parser.add_argument(
+            '--token-ttl',
+            dest='token_ttl',
+            metavar="<token_ttl>",
+            required=False,
+            help="TTL of token.")
 
         return parser
 
