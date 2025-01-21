@@ -43,6 +43,7 @@ event_id = 7
 event_type = 'fake.event'
 event_time = "3000-07-01T12"
 object_type = 'lease'
+token_ttl = '60'
 node_properties = {
     'cpus': '40',
     'memory_mb': '131072',

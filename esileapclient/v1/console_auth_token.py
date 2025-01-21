@@ -25,7 +25,7 @@ class ConsoleAuthToken(base.Resource):
         'access_url': "Access URL",
     }
 
-    _creation_attributes = ['node_uuid_or_name']
+    _creation_attributes = ['node_uuid_or_name', 'token_ttl']
 
     def __repr__(self):
         return "<ConsoleAuthToken %s>" % self._info
