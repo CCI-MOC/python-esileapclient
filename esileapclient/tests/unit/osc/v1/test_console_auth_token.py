@@ -39,14 +39,18 @@ class TestCreateConsoleAuthToken(TestConsoleAuthToken):
         self.cmd = console_auth_token.CreateConsoleAuthToken(self.app, None)
 
     def test_console_auth_token_create(self):
-        arglist = [fakes.node_uuid]
-        verifylist = [('node_uuid_or_name', fakes.node_uuid)]
+        arglist = [fakes.node_uuid, '--token-ttl', fakes.token_ttl]
+        verifylist = [
+            ('node_uuid_or_name', fakes.node_uuid),
+            ('token_ttl', fakes.token_ttl)
+        ]
 
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
         self.cmd.take_action(parsed_args)
 
         args = {
-            'node_uuid_or_name': fakes.node_uuid
+            'node_uuid_or_name': fakes.node_uuid,
+            'token_ttl': fakes.token_ttl
         }
 
         self.client_mock.create_console_auth_token.assert_called_once_with(
