@@ -10,6 +10,7 @@
 #    License for the specific language governing permissions and limitations
 #    under the License.
 
+import datetime
 import logging
 import json
 
@@ -20,6 +21,7 @@ from esileapclient.v1.lease import Lease as LEASE_RESOURCE
 from esileapclient.v1.offer import Offer as OFFER_RESOURCE
 from esileapclient.common import utils
 
+END_OF_TIME = '9999-12-31T00:00:00'
 LOG = logging.getLogger(__name__)
 
 
@@ -161,6 +163,16 @@ class ListOffer(command.Lister):
                  "Can be specified multiple times. "
                  f"Supported operators are: {', '.join(utils.OPS.keys())}",
             metavar='"key>=value"')
+        parser.add_argument(
+            '--now',
+            action='store_const',
+            dest='availability_range',
+            const=[
+                datetime.datetime.now().isoformat(timespec='seconds'),
+                END_OF_TIME
+            ],
+            help='Only list offers that have availability right now',
+        )
 
         return parser
 
