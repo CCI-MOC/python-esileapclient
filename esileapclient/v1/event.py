@@ -18,35 +18,41 @@ LOG = logging.getLogger(__name__)
 
 
 class Event(base.Resource):
-
     detailed_fields = {
-        'id': "ID",
-        'event_type': "Event Type",
-        'event_time': "Event Time",
-        'object_type': "Object Type",
-        'object_uuid': "Object UUID",
-        'resource_type': "Resource Type",
-        'resource_uuid': "Resource UUID",
-        'lessee_id': "Lessee ID",
-        'owner_id': "Owner ID",
+        "id": "ID",
+        "event_type": "Event Type",
+        "event_time": "Event Time",
+        "object_type": "Object Type",
+        "object_uuid": "Object UUID",
+        "resource_type": "Resource Type",
+        "resource_uuid": "Resource UUID",
+        "lessee_id": "Lessee ID",
+        "owner_id": "Owner ID",
     }
 
     fields = {
-        'id': "ID",
-        'event_type': "Event Type",
-        'event_time': "Event Time",
-        'object_type': "Object Type",
-        'object_uuid': "Object UUID",
-        'resource_type': "Resource Type",
-        'resource_uuid': "Resource UUID",
-        'lessee_id': "Lessee ID",
-        'owner_id': "Owner ID",
+        "id": "ID",
+        "event_type": "Event Type",
+        "event_time": "Event Time",
+        "object_type": "Object Type",
+        "object_uuid": "Object UUID",
+        "resource_type": "Resource Type",
+        "resource_uuid": "Resource UUID",
+        "lessee_id": "Lessee ID",
+        "owner_id": "Owner ID",
     }
 
-    _creation_attributes = ['id', 'event_type', 'event_time',
-                            'object_type', 'object_uuid',
-                            'resource_type', 'resource_uuid',
-                            'lessee_id', 'owner_id']
+    _creation_attributes = [
+        "id",
+        "event_type",
+        "event_time",
+        "object_type",
+        "object_uuid",
+        "resource_type",
+        "resource_uuid",
+        "lessee_id",
+        "owner_id",
+    ]
 
     def __repr__(self):
         return "<Event %s>" % self._info

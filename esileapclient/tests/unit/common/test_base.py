@@ -18,38 +18,37 @@ from esileapclient.common import base
 
 
 FAKE_RESOURCE = {
-    'uuid': '11111111-2222-3333-4444-555555555555',
-    'attribute1': '1',
-    'attribute2': '2',
+    "uuid": "11111111-2222-3333-4444-555555555555",
+    "attribute1": "1",
+    "attribute2": "2",
 }
 FAKE_RESOURCE_2 = {
-    'uuid': '66666666-7777-8888-9999-000000000000',
-    'attribute1': '3',
-    'attribute2': '4',
+    "uuid": "66666666-7777-8888-9999-000000000000",
+    "attribute1": "3",
+    "attribute2": "4",
 }
 
 
 CREATE_FAKE_RESOURCE = copy.deepcopy(FAKE_RESOURCE)
-del CREATE_FAKE_RESOURCE['uuid']
+del CREATE_FAKE_RESOURCE["uuid"]
 
 UPDATE_FAKE_RESOURCE = {
-    'attribute1': '5',
+    "attribute1": "5",
 }
 
 INVALID_UPDATE_FAKE_RESOURCE = {
-    'attribute2': '6',
+    "attribute2": "6",
 }
 
 INVALID_ATTRIBUTE_FAKE_RESOURCE = {
-    'non-existent-attribute': 'bad',
-    'attribute1': '1',
-    'attribute2': '2',
+    "non-existent-attribute": "bad",
+    "attribute1": "1",
+    "attribute2": "2",
 }
 
 
 class FakeResponse(object):
-    def __init__(self, headers=None, body=None, status=None,
-                 request_headers={}):
+    def __init__(self, headers=None, body=None, status=None, request_headers={}):
         """Fake object to help testing.
         :param headers: dict representing HTTP response headers
         :param body: file-like object
@@ -66,22 +65,21 @@ VALID_RESPONSE = FakeResponse(status=200)
 
 
 class FakeResource(base.Resource):
-
     fields = {
-        'uuid': 'UUID',
-        'attribute1': 'Attribute 1',
-        'attribute2': 'Attribute 2',
+        "uuid": "UUID",
+        "attribute1": "Attribute 1",
+        "attribute2": "Attribute 2",
     }
 
     detailed_fields = {
-        'uuid': 'UUID',
-        'attribute1': 'Attribute 1',
-        'attribute2': 'Attribute 2',
-        'attribute3': 'Attribute 3',
+        "uuid": "UUID",
+        "attribute1": "Attribute 1",
+        "attribute2": "Attribute 2",
+        "attribute3": "Attribute 3",
     }
 
-    _creation_attributes = ['attribute1', 'attribute2']
-    _update_attributes = ['attribute1']
+    _creation_attributes = ["attribute1", "attribute2"]
+    _update_attributes = ["attribute1"]
 
     def __repr__(self):
         return "<FakeResource %s>" % self._info
@@ -89,231 +87,207 @@ class FakeResource(base.Resource):
 
 class FakeResourceManager(base.Manager):
     resource_class = FakeResource
-    _resource_name = 'fakeresources'
+    _resource_name = "fakeresources"
 
 
 class ManagerTestCase(testtools.TestCase):
-
     def test__create(self):
-
         manager = FakeResourceManager(None)
-        with mock.patch.object(manager, 'api') as mock_api:
-
-            mock_api.json_request.return_value = (
-                VALID_CREATE_RESPONSE,
-                FAKE_RESOURCE)
+        with mock.patch.object(manager, "api") as mock_api:
+            mock_api.json_request.return_value = (VALID_CREATE_RESPONSE, FAKE_RESOURCE)
 
             resource = manager._create(**CREATE_FAKE_RESOURCE)
 
             mock_api.json_request.assert_called_once_with(
-                'POST', '/v1/fakeresources',
-                **{'body': CREATE_FAKE_RESOURCE})
+                "POST", "/v1/fakeresources", **{"body": CREATE_FAKE_RESOURCE}
+            )
 
             self.assertIsInstance(resource, FakeResource)
             self.assertEqual(resource._info, FAKE_RESOURCE)
 
     def test__create_microversion_override(self):
-
         manager = FakeResourceManager(None)
-        with mock.patch.object(manager, 'api') as mock_api:
+        with mock.patch.object(manager, "api") as mock_api:
+            mock_api.json_request.return_value = (VALID_CREATE_RESPONSE, FAKE_RESOURCE)
 
-            mock_api.json_request.return_value = (
-                VALID_CREATE_RESPONSE,
-                FAKE_RESOURCE)
-
-            resource = manager._create(os_esileap_api_version='1.10',
-                                       **CREATE_FAKE_RESOURCE)
+            resource = manager._create(
+                os_esileap_api_version="1.10", **CREATE_FAKE_RESOURCE
+            )
 
             mock_api.json_request.assert_called_once_with(
-                'POST', '/v1/fakeresources',
-                **{'body': CREATE_FAKE_RESOURCE,
-                   'headers': {'X-OpenStack-ESI-Leap-API-Version': '1.10'}})
+                "POST",
+                "/v1/fakeresources",
+                **{
+                    "body": CREATE_FAKE_RESOURCE,
+                    "headers": {"X-OpenStack-ESI-Leap-API-Version": "1.10"},
+                },
+            )
 
             self.assertIsInstance(resource, FakeResource)
             self.assertEqual(resource._info, FAKE_RESOURCE)
 
     def test__create_with_invalid_attribute(self):
-
         manager = FakeResourceManager(None)
-        with mock.patch.object(manager, 'api'):
-
+        with mock.patch.object(manager, "api"):
             self.assertRaises(
-                Exception,
-                manager._create,
-                **INVALID_ATTRIBUTE_FAKE_RESOURCE)
+                Exception, manager._create, **INVALID_ATTRIBUTE_FAKE_RESOURCE
+            )
 
     def test__update(self):
         manager = FakeResourceManager(None)
-        with mock.patch.object(manager, 'api') as mock_api:
+        with mock.patch.object(manager, "api") as mock_api:
+            mock_api.json_request.return_value = (VALID_RESPONSE, FAKE_RESOURCE)
 
-            mock_api.json_request.return_value = (
-                VALID_RESPONSE,
-                FAKE_RESOURCE)
-
-            resource = manager._update(FAKE_RESOURCE['uuid'],
-                                       **UPDATE_FAKE_RESOURCE)
+            resource = manager._update(FAKE_RESOURCE["uuid"], **UPDATE_FAKE_RESOURCE)
 
             mock_api.json_request.assert_called_once_with(
-                'PATCH', '/v1/fakeresources/%s' % FAKE_RESOURCE['uuid'],
-                **{'body': UPDATE_FAKE_RESOURCE})
+                "PATCH",
+                "/v1/fakeresources/%s" % FAKE_RESOURCE["uuid"],
+                **{"body": UPDATE_FAKE_RESOURCE},
+            )
 
             self.assertIsInstance(resource, FakeResource)
             self.assertEqual(resource._info, FAKE_RESOURCE)
 
     def test__update_with_invalid_attribute(self):
         manager = FakeResourceManager(None)
-        with mock.patch.object(manager, 'api'):
-
+        with mock.patch.object(manager, "api"):
             self.assertRaises(
                 Exception,
                 manager._update,
-                FAKE_RESOURCE['uuid'],
-                **INVALID_UPDATE_FAKE_RESOURCE)
+                FAKE_RESOURCE["uuid"],
+                **INVALID_UPDATE_FAKE_RESOURCE,
+            )
 
     def test__list(self):
-
         manager = FakeResourceManager(None)
-        with mock.patch.object(manager, 'api') as mock_api:
-
+        with mock.patch.object(manager, "api") as mock_api:
             mock_api.json_request.return_value = (
                 VALID_RESPONSE,
-                {'fakeresources': [FAKE_RESOURCE, FAKE_RESOURCE_2]})
+                {"fakeresources": [FAKE_RESOURCE, FAKE_RESOURCE_2]},
+            )
 
             resources_list = manager._list(manager._path())
 
-            mock_api.json_request.assert_called_once_with(
-                'GET', '/v1/fakeresources')
+            mock_api.json_request.assert_called_once_with("GET", "/v1/fakeresources")
 
-            expected_resources = [FakeResource(None, FAKE_RESOURCE),
-                                  FakeResource(None, FAKE_RESOURCE_2)]
+            expected_resources = [
+                FakeResource(None, FAKE_RESOURCE),
+                FakeResource(None, FAKE_RESOURCE_2),
+            ]
 
             self.assertIsInstance(resources_list, list)
-            assert (len(expected_resources) == 2)
+            assert len(expected_resources) == 2
 
             self.assertIsInstance(resources_list[0], FakeResource)
 
-            self.assertEqual(resources_list[0]._info,
-                             expected_resources[0]._info)
-            self.assertEqual(resources_list[1]._info,
-                             expected_resources[1]._info)
+            self.assertEqual(resources_list[0]._info, expected_resources[0]._info)
+            self.assertEqual(resources_list[1]._info, expected_resources[1]._info)
 
     def test__list_microversion_override(self):
-
         manager = FakeResourceManager(None)
-        with mock.patch.object(manager, 'api') as mock_api:
-
+        with mock.patch.object(manager, "api") as mock_api:
             mock_api.json_request.return_value = (
                 VALID_RESPONSE,
-                {'fakeresources': [FAKE_RESOURCE, FAKE_RESOURCE_2]})
+                {"fakeresources": [FAKE_RESOURCE, FAKE_RESOURCE_2]},
+            )
 
-            resources_list = manager._list(manager._path(),
-                                           os_esileap_api_version='1.10')
+            resources_list = manager._list(
+                manager._path(), os_esileap_api_version="1.10"
+            )
 
             mock_api.json_request.assert_called_once_with(
-                'GET', '/v1/fakeresources',
-                **{'headers': {'X-OpenStack-ESI-Leap-API-Version': '1.10'}})
+                "GET",
+                "/v1/fakeresources",
+                **{"headers": {"X-OpenStack-ESI-Leap-API-Version": "1.10"}},
+            )
 
-            expected_resources = [FakeResource(None, FAKE_RESOURCE),
-                                  FakeResource(None, FAKE_RESOURCE_2)]
+            expected_resources = [
+                FakeResource(None, FAKE_RESOURCE),
+                FakeResource(None, FAKE_RESOURCE_2),
+            ]
 
             self.assertIsInstance(resources_list, list)
-            assert (len(expected_resources) == 2)
+            assert len(expected_resources) == 2
 
             self.assertIsInstance(resources_list[0], FakeResource)
 
-            self.assertEqual(resources_list[0]._info,
-                             expected_resources[0]._info)
-            self.assertEqual(resources_list[1]._info,
-                             expected_resources[1]._info)
+            self.assertEqual(resources_list[0]._info, expected_resources[0]._info)
+            self.assertEqual(resources_list[1]._info, expected_resources[1]._info)
 
     def test__get(self):
-
         manager = FakeResourceManager(None)
-        with mock.patch.object(manager, 'api') as mock_api:
+        with mock.patch.object(manager, "api") as mock_api:
+            mock_api.json_request.return_value = (VALID_RESPONSE, FAKE_RESOURCE)
 
-            mock_api.json_request.return_value = (
-                VALID_RESPONSE,
-                FAKE_RESOURCE)
-
-            resource = manager._get(FAKE_RESOURCE['uuid'])
+            resource = manager._get(FAKE_RESOURCE["uuid"])
 
             mock_api.json_request.assert_called_once_with(
-                'GET', '/v1/fakeresources/%s' % FAKE_RESOURCE['uuid'],)
+                "GET",
+                "/v1/fakeresources/%s" % FAKE_RESOURCE["uuid"],
+            )
 
             self.assertIsInstance(resource, FakeResource)
             self.assertEqual(FAKE_RESOURCE, resource._info)
 
     def test__get_microversion_override(self):
-
         manager = FakeResourceManager(None)
-        with mock.patch.object(manager, 'api') as mock_api:
+        with mock.patch.object(manager, "api") as mock_api:
+            mock_api.json_request.return_value = (VALID_RESPONSE, FAKE_RESOURCE)
 
-            mock_api.json_request.return_value = (
-                VALID_RESPONSE,
-                FAKE_RESOURCE)
-
-            resource = manager._get(FAKE_RESOURCE['uuid'],
-                                    os_esileap_api_version='1.10')
+            resource = manager._get(
+                FAKE_RESOURCE["uuid"], os_esileap_api_version="1.10"
+            )
 
             mock_api.json_request.assert_called_once_with(
-                'GET', '/v1/fakeresources/%s' % FAKE_RESOURCE['uuid'],
-                **{'headers': {'X-OpenStack-ESI-Leap-API-Version': '1.10'}})
+                "GET",
+                "/v1/fakeresources/%s" % FAKE_RESOURCE["uuid"],
+                **{"headers": {"X-OpenStack-ESI-Leap-API-Version": "1.10"}},
+            )
 
             self.assertIsInstance(resource, FakeResource)
             self.assertEqual(FAKE_RESOURCE, resource._info)
 
     def test__get_invalid_resource_id_raises(self):
-
         manager = FakeResourceManager(None)
-        with mock.patch.object(manager, 'api'):
-            resource_ids = [[], {}, False, '', 0, None, (), 'hi']
+        with mock.patch.object(manager, "api"):
+            resource_ids = [[], {}, False, "", 0, None, (), "hi"]
             for resource_id in resource_ids:
-                self.assertRaises(Exception, manager._get,
-                                  resource_id=resource_id)
+                self.assertRaises(Exception, manager._get, resource_id=resource_id)
 
     def test__delete(self):
-
         manager = FakeResourceManager(None)
-        with mock.patch.object(manager, 'api') as mock_api:
+        with mock.patch.object(manager, "api") as mock_api:
+            mock_api.json_request.return_value = (VALID_RESPONSE, None)
 
-            mock_api.json_request.return_value = (
-                VALID_RESPONSE,
-                None)
-
-            resp = manager._delete(
-                resource_id=FAKE_RESOURCE['uuid'])
+            resp = manager._delete(resource_id=FAKE_RESOURCE["uuid"])
 
             mock_api.json_request.assert_called_once_with(
-                'DELETE',
-                '/v1/fakeresources/%s' % FAKE_RESOURCE['uuid'])
+                "DELETE", "/v1/fakeresources/%s" % FAKE_RESOURCE["uuid"]
+            )
 
             self.assertEqual(resp, None)
 
     def test__delete_microversion_override(self):
-
         manager = FakeResourceManager(None)
-        with mock.patch.object(manager, 'api') as mock_api:
-
-            mock_api.json_request.return_value = (
-                VALID_RESPONSE,
-                None)
+        with mock.patch.object(manager, "api") as mock_api:
+            mock_api.json_request.return_value = (VALID_RESPONSE, None)
 
             resp = manager._delete(
-                resource_id=FAKE_RESOURCE['uuid'],
-                os_esileap_api_version='1.10')
+                resource_id=FAKE_RESOURCE["uuid"], os_esileap_api_version="1.10"
+            )
 
             mock_api.json_request.assert_called_once_with(
-                'DELETE',
-                '/v1/fakeresources/%s' % FAKE_RESOURCE['uuid'],
-                **{'headers': {'X-OpenStack-ESI-Leap-API-Version': '1.10'}})
+                "DELETE",
+                "/v1/fakeresources/%s" % FAKE_RESOURCE["uuid"],
+                **{"headers": {"X-OpenStack-ESI-Leap-API-Version": "1.10"}},
+            )
 
             self.assertEqual(resp, None)
 
     def test__delete_invalid_resource_id_raises(self):
-
         manager = FakeResourceManager(None)
-        with mock.patch.object(manager, 'api'):
-            resource_ids = [[], {}, False, '', 0, None, (), 'hi']
+        with mock.patch.object(manager, "api"):
+            resource_ids = [[], {}, False, "", 0, None, (), "hi"]
             for resource_id in resource_ids:
-                self.assertRaises(Exception, manager._delete,
-                                  resource_id=resource_id)
+                self.assertRaises(Exception, manager._delete, resource_id=resource_id)

@@ -18,7 +18,6 @@ from esileapclient.tests.unit.osc.v1 import fakes
 
 
 class TestConsoleAuthToken(base.TestESILeapCommand):
-
     def setUp(self):
         super(TestConsoleAuthToken, self).setUp()
 
@@ -27,34 +26,29 @@ class TestConsoleAuthToken(base.TestESILeapCommand):
 
 
 class TestCreateConsoleAuthToken(TestConsoleAuthToken):
-
     def setUp(self):
         super(TestCreateConsoleAuthToken, self).setUp()
 
-        self.client_mock.create_console_auth_token.return_value = (
-            base.FakeResource(copy.deepcopy(fakes.CONSOLE_AUTH_TOKEN))
+        self.client_mock.create_console_auth_token.return_value = base.FakeResource(
+            copy.deepcopy(fakes.CONSOLE_AUTH_TOKEN)
         )
 
         # Get the command object to test
         self.cmd = console_auth_token.CreateConsoleAuthToken(self.app, None)
 
     def test_console_auth_token_create(self):
-        arglist = [fakes.node_uuid, '--token-ttl', fakes.token_ttl]
+        arglist = [fakes.node_uuid, "--token-ttl", fakes.token_ttl]
         verifylist = [
-            ('node_uuid_or_name', fakes.node_uuid),
-            ('token_ttl', fakes.token_ttl)
+            ("node_uuid_or_name", fakes.node_uuid),
+            ("token_ttl", fakes.token_ttl),
         ]
 
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
         self.cmd.take_action(parsed_args)
 
-        args = {
-            'node_uuid_or_name': fakes.node_uuid,
-            'token_ttl': fakes.token_ttl
-        }
+        args = {"node_uuid_or_name": fakes.node_uuid, "token_ttl": fakes.token_ttl}
 
-        self.client_mock.create_console_auth_token.assert_called_once_with(
-            **args)
+        self.client_mock.create_console_auth_token.assert_called_once_with(**args)
 
 
 class TestConsoleAuthTokenDelete(TestConsoleAuthToken):
@@ -65,10 +59,11 @@ class TestConsoleAuthTokenDelete(TestConsoleAuthToken):
 
     def test_console_auth_token_delete(self):
         arglist = [fakes.node_uuid]
-        verifylist = [('node_uuid_or_name', fakes.node_uuid)]
+        verifylist = [("node_uuid_or_name", fakes.node_uuid)]
 
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
         self.cmd.take_action(parsed_args)
 
         self.client_mock.delete_console_auth_token.assert_called_once_with(
-            fakes.node_uuid)
+            fakes.node_uuid
+        )

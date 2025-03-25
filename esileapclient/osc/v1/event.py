@@ -29,35 +29,41 @@ class ListEvent(command.Lister):
         parser = super(ListEvent, self).get_parser(prog_name)
 
         parser.add_argument(
-            '--project',
-            dest='project_id',
+            "--project",
+            dest="project_id",
             required=False,
-            help="Show all events associated with given project ID or name.")
+            help="Show all events associated with given project ID or name.",
+        )
         parser.add_argument(
-            '--last-event-id',
-            dest='last_event_id',
+            "--last-event-id",
+            dest="last_event_id",
             required=False,
-            help="Show events after this event ID.")
+            help="Show events after this event ID.",
+        )
         parser.add_argument(
-            '--last-notification-time',
-            dest='last_event_time',
+            "--last-notification-time",
+            dest="last_event_time",
             required=False,
-            help="Show events after this notification time.")
+            help="Show events after this notification time.",
+        )
         parser.add_argument(
-            '--event-type',
-            dest='event_type',
+            "--event-type",
+            dest="event_type",
             required=False,
-            help="Show events matching this event type.")
+            help="Show events matching this event type.",
+        )
         parser.add_argument(
-            '--resource-type',
-            dest='resource_type',
+            "--resource-type",
+            dest="resource_type",
             required=False,
-            help="Show events matching this resource type.")
+            help="Show events matching this resource type.",
+        )
         parser.add_argument(
-            '--resource-uuid',
-            dest='resource_uuid',
+            "--resource-uuid",
+            dest="resource_uuid",
             required=False,
-            help="Show events matching this resource ID or name.")
+            help="Show events matching this resource ID or name.",
+        )
 
         return parser
 
@@ -65,16 +71,15 @@ class ListEvent(command.Lister):
         client = self.app.client_manager.lease
 
         filters = {
-            'lessee_or_owner_id': parsed_args.project_id,
-            'last_event_id': parsed_args.last_event_id,
-            'last_event_time': parsed_args.last_event_time,
-            'event_type': parsed_args.event_type,
-            'resource_type': parsed_args.resource_type,
-            'resource_uuid': parsed_args.resource_uuid,
+            "lessee_or_owner_id": parsed_args.project_id,
+            "last_event_id": parsed_args.last_event_id,
+            "last_event_time": parsed_args.last_event_time,
+            "event_type": parsed_args.event_type,
+            "resource_type": parsed_args.resource_type,
+            "resource_uuid": parsed_args.resource_uuid,
         }
 
         data = list(client.events(**filters))
         columns = EVENT_RESOURCE.fields.keys()
         labels = EVENT_RESOURCE.fields.values()
-        return (labels,
-                (oscutils.get_item_properties(s, columns) for s in data))
+        return (labels, (oscutils.get_item_properties(s, columns) for s in data))

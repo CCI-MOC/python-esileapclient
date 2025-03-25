@@ -32,14 +32,12 @@ class Manager(object):
     @property
     @abc.abstractmethod
     def resource_class(self):
-        """The resource class
-        """
+        """The resource class"""
 
     @property
     @abc.abstractmethod
     def _resource_name(self):
-        """The resource name.
-        """
+        """The resource name."""
 
     def __init__(self, api):
         self.api = api
@@ -50,17 +48,20 @@ class Manager(object):
                             path.
         """
 
-        return ('/v1/%s/%s' % (self._resource_name, resource_id)
-                if resource_id else '/v1/%s' % self._resource_name)
+        return (
+            "/v1/%s/%s" % (self._resource_name, resource_id)
+            if resource_id
+            else "/v1/%s" % self._resource_name
+        )
 
     @staticmethod
     def _url_variables(variables):
         """Returns a url with variables set"""
 
-        url_variables = '?'
+        url_variables = "?"
         for k, v in variables.items():
             if v is not None:
-                url_variables += k + '=' + v + '&'
+                url_variables += k + "=" + v + "&"
         return url_variables[:-1]
 
     def _create(self, os_esileap_api_version=None, **kwargs):
@@ -71,30 +72,32 @@ class Manager(object):
 
         new = {}
         invalid = []
-        for (key, value) in kwargs.items():
+        for key, value in kwargs.items():
             if key in self.resource_class._creation_attributes:
                 new[key] = value
             else:
                 invalid.append(key)
         if invalid:
-            raise Exception('The attribute(s) "%(attrs)s" '
-                            'are invalid; they are not '
-                            'needed to create %(resource)s.' %
-                            {'resource': self._resource_name,
-                             'attrs': '","'.join(invalid)})
+            raise Exception(
+                'The attribute(s) "%(attrs)s" '
+                "are invalid; they are not "
+                "needed to create %(resource)s."
+                % {"resource": self._resource_name, "attrs": '","'.join(invalid)}
+            )
 
         headers = {}
         if os_esileap_api_version is not None:
-            headers['headers'] = {'X-OpenStack-ESI-Leap-API-Version':
-                                  os_esileap_api_version}
+            headers["headers"] = {
+                "X-OpenStack-ESI-Leap-API-Version": os_esileap_api_version
+            }
 
         url = self._path()
-        resp, body = self.api.json_request('POST', url, body=new, **headers)
+        resp, body = self.api.json_request("POST", url, body=new, **headers)
 
         if resp.status_code == 201:
             return self.resource_class(self, body)
         else:
-            raise exceptions.CommandError(json.loads(resp.text)['faultstring'])
+            raise exceptions.CommandError(json.loads(resp.text)["faultstring"])
 
     def _update(self, resource_id, os_esileap_api_version=None, **kwargs):
         """Update a resource based on a kwargs dictionary of attributes.
@@ -104,30 +107,32 @@ class Manager(object):
 
         new = {}
         invalid = []
-        for (key, value) in kwargs.items():
+        for key, value in kwargs.items():
             if key in self.resource_class._update_attributes:
                 new[key] = value
             else:
                 invalid.append(key)
         if invalid:
-            raise Exception('The attribute(s) "%(attrs)s" '
-                            'are invalid; they are not '
-                            'needed to update %(resource)s.' %
-                            {'resource': self._resource_name,
-                             'attrs': '","'.join(invalid)})
+            raise Exception(
+                'The attribute(s) "%(attrs)s" '
+                "are invalid; they are not "
+                "needed to update %(resource)s."
+                % {"resource": self._resource_name, "attrs": '","'.join(invalid)}
+            )
 
         headers = {}
         if os_esileap_api_version is not None:
-            headers['headers'] = {'X-OpenStack-ESI-Leap-API-Version':
-                                  os_esileap_api_version}
+            headers["headers"] = {
+                "X-OpenStack-ESI-Leap-API-Version": os_esileap_api_version
+            }
 
         url = self._path(resource_id)
-        resp, body = self.api.json_request('PATCH', url, body=new, **headers)
+        resp, body = self.api.json_request("PATCH", url, body=new, **headers)
 
         if resp.status_code == 200:
             return self.resource_class(self, body)
         else:
-            raise exceptions.CommandError(json.loads(resp.text)['faultstring'])
+            raise exceptions.CommandError(json.loads(resp.text)["faultstring"])
 
     def _list(self, url, obj_class=None, os_esileap_api_version=None):
         if obj_class is None:
@@ -136,17 +141,18 @@ class Manager(object):
         kwargs = {}
 
         if os_esileap_api_version is not None:
-            kwargs['headers'] = {'X-OpenStack-ESI-Leap-API-Version':
-                                 os_esileap_api_version}
+            kwargs["headers"] = {
+                "X-OpenStack-ESI-Leap-API-Version": os_esileap_api_version
+            }
 
-        resp, body = self.api.json_request('GET', url, **kwargs)
+        resp, body = self.api.json_request("GET", url, **kwargs)
 
         if resp.status_code == 200:
             body = body[self._resource_name]
 
             return [obj_class(self, res) for res in body if res]
         else:
-            raise exceptions.CommandError(json.loads(resp.text)['faultstring'])
+            raise exceptions.CommandError(json.loads(resp.text)["faultstring"])
 
     def _get(self, resource_id, obj_class=None, os_esileap_api_version=None):
         """Retrieve a resource.
@@ -162,16 +168,17 @@ class Manager(object):
         kwargs = {}
 
         if os_esileap_api_version is not None:
-            kwargs['headers'] = {'X-OpenStack-ESI-Leap-API-Version':
-                                 os_esileap_api_version}
+            kwargs["headers"] = {
+                "X-OpenStack-ESI-Leap-API-Version": os_esileap_api_version
+            }
 
-        resp, body = self.api.json_request('GET', url, **kwargs)
+        resp, body = self.api.json_request("GET", url, **kwargs)
 
         if resp.status_code == 200:
             return obj_class(self, body)
 
         else:
-            raise exceptions.CommandError(json.loads(resp.text)['faultstring'])
+            raise exceptions.CommandError(json.loads(resp.text)["faultstring"])
 
     def _delete(self, resource_id, os_esileap_api_version=None):
         """Delete a resource.
@@ -184,13 +191,14 @@ class Manager(object):
         kwargs = {}
 
         if os_esileap_api_version is not None:
-            kwargs['headers'] = {'X-OpenStack-ESI-Leap-API-Version':
-                                 os_esileap_api_version}
+            kwargs["headers"] = {
+                "X-OpenStack-ESI-Leap-API-Version": os_esileap_api_version
+            }
 
-        resp, _ = self.api.json_request('DELETE', url, **kwargs)
+        resp, _ = self.api.json_request("DELETE", url, **kwargs)
 
         if resp.status_code != 200:
-            raise exceptions.CommandError(json.loads(resp.text)['faultstring'])
+            raise exceptions.CommandError(json.loads(resp.text)["faultstring"])
 
 
 @six.add_metaclass(abc.ABCMeta)
@@ -214,8 +222,7 @@ class Resource(object):
     @property
     @abc.abstractmethod
     def _creation_attributes(self):
-        """A list of required creation attributes for a resource type.
-        """
+        """A list of required creation attributes for a resource type."""
 
     def __init__(self, manager, info):
         """Populate and bind to a manager.
@@ -224,12 +231,13 @@ class Resource(object):
         """
 
         self.manager = manager
-        self._info = {k: v for (k, v) in info.items() if k
-                      in self.detailed_fields.keys()}
+        self._info = {
+            k: v for (k, v) in info.items() if k in self.detailed_fields.keys()
+        }
         self._add_details(self._info)
 
     def _add_details(self, info):
-        for (k, v) in info.items():
+        for k, v in info.items():
             try:
                 setattr(self, k, v)
             except AttributeError:

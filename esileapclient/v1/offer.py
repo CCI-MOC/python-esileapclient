@@ -18,56 +18,62 @@ LOG = logging.getLogger(__name__)
 
 
 class Offer(base.Resource):
-
     detailed_fields = {
-        'availabilities': "Availabilities",
-        'end_time': "End Time",
-        'lessee': "Lessee",
-        'lessee_id': "Lessee ID",
-        'name': "Name",
-        'parent_lease_uuid': "Parent Lease UUID",
-        'project': "Project",
-        'project_id': "Project ID",
-        'properties': "Properties",
-        'resource': "Resource",
-        'resource_class': "Resource Class",
-        'resource_properties': "Resource Properties",
-        'resource_type': "Resource Type",
-        'resource_uuid': "Resource UUID",
-        'start_time': "Start Time",
-        'status': "Status",
-        'uuid': "UUID",
+        "availabilities": "Availabilities",
+        "end_time": "End Time",
+        "lessee": "Lessee",
+        "lessee_id": "Lessee ID",
+        "name": "Name",
+        "parent_lease_uuid": "Parent Lease UUID",
+        "project": "Project",
+        "project_id": "Project ID",
+        "properties": "Properties",
+        "resource": "Resource",
+        "resource_class": "Resource Class",
+        "resource_properties": "Resource Properties",
+        "resource_type": "Resource Type",
+        "resource_uuid": "Resource UUID",
+        "start_time": "Start Time",
+        "status": "Status",
+        "uuid": "UUID",
     }
 
     long_fields = {
-        'uuid': "UUID",
-        'resource': "Resource",
-        'resource_class': "Resource Class",
-        'resource_properties': "Resource Properties",
-        'lessee': "Lessee",
-        'start_time': "Start Time",
-        'end_time': "End Time",
-        'status': "Status",
-        'availabilities': "Availabilities",
-        'project': "Project",
-        'parent_lease_uuid': "Parent Lease UUID",
+        "uuid": "UUID",
+        "resource": "Resource",
+        "resource_class": "Resource Class",
+        "resource_properties": "Resource Properties",
+        "lessee": "Lessee",
+        "start_time": "Start Time",
+        "end_time": "End Time",
+        "status": "Status",
+        "availabilities": "Availabilities",
+        "project": "Project",
+        "parent_lease_uuid": "Parent Lease UUID",
     }
 
     fields = {
-        'uuid': "UUID",
-        'resource': "Resource",
-        'resource_class': "Resource Class",
-        'lessee': "Lessee",
-        'start_time': "Start Time",
-        'end_time': "End Time",
-        'status': "Status",
-        'availabilities': "Availabilities",
+        "uuid": "UUID",
+        "resource": "Resource",
+        "resource_class": "Resource Class",
+        "lessee": "Lessee",
+        "start_time": "Start Time",
+        "end_time": "End Time",
+        "status": "Status",
+        "availabilities": "Availabilities",
     }
 
-    _creation_attributes = ['resource_type', 'resource_uuid',
-                            'start_time', 'end_time', 'status',
-                            'project_id', 'properties', 'name',
-                            'lessee_id']
+    _creation_attributes = [
+        "resource_type",
+        "resource_uuid",
+        "start_time",
+        "end_time",
+        "status",
+        "project_id",
+        "properties",
+        "name",
+        "lessee_id",
+    ]
 
     def __repr__(self):
         return "<Offer %s>" % self._info

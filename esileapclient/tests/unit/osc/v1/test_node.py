@@ -19,7 +19,6 @@ from esileapclient.tests.unit.osc.v1 import fakes
 
 
 class TestNode(base.TestESILeapCommand):
-
     def setUp(self):
         super(TestNode, self).setUp()
 
@@ -28,7 +27,6 @@ class TestNode(base.TestESILeapCommand):
 
 
 class TestNodeList(TestNode):
-
     def setUp(self):
         super(TestNodeList, self).setUp()
 
@@ -45,9 +43,9 @@ class TestNodeList(TestNode):
         columns, data = self.cmd.take_action(parsed_args)
 
         filters = {
-            'resource_class': parsed_args.resource_class,
-            'owner': parsed_args.owner,
-            'lessee': parsed_args.lessee
+            "resource_class": parsed_args.resource_class,
+            "owner": parsed_args.owner,
+            "lessee": parsed_args.lessee,
         }
 
         self.client_mock.nodes.assert_called_with(**filters)
@@ -65,24 +63,31 @@ class TestNodeList(TestNode):
 
         self.assertEqual(collist, list(columns))
 
-        datalist = ((fakes.node_name,
-                     fakes.node_owner,
-                     '', fakes.lease_resource_class,
-                     '', '', '', ''
-                     ),)
+        datalist = (
+            (
+                fakes.node_name,
+                fakes.node_owner,
+                "",
+                fakes.lease_resource_class,
+                "",
+                "",
+                "",
+                "",
+            ),
+        )
         self.assertEqual(datalist, tuple(data))
 
     def test_node_list_long(self):
-        arglist = ['--long']
-        verifylist = [('long', True)]
+        arglist = ["--long"]
+        verifylist = [("long", True)]
 
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
         columns, data = self.cmd.take_action(parsed_args)
 
         filters = {
-            'resource_class': parsed_args.resource_class,
-            'owner': parsed_args.owner,
-            'lessee': parsed_args.lessee
+            "resource_class": parsed_args.resource_class,
+            "owner": parsed_args.owner,
+            "lessee": parsed_args.lessee,
         }
 
         self.client_mock.nodes.assert_called_with(**filters)
@@ -97,65 +102,72 @@ class TestNodeList(TestNode):
             "Offer UUID",
             "Lease UUID",
             "Future Offers",
-            "Future Leases"
+            "Future Leases",
         ]
         long_collist = [
-            'UUID',
-            'Name',
-            'Owner',
-            'Lessee',
-            'Resource Class',
-            'Provision State',
-            'Maintenance',
-            'Properties',
-            'Offer UUID',
-            'Lease UUID',
-            'Future Offers',
-            'Future Leases'
+            "UUID",
+            "Name",
+            "Owner",
+            "Lessee",
+            "Resource Class",
+            "Provision State",
+            "Maintenance",
+            "Properties",
+            "Offer UUID",
+            "Lease UUID",
+            "Future Offers",
+            "Future Leases",
         ]
 
         self.assertEqual(long_collist, list(columns))
 
-        datalist = ((fakes.node_uuid,
-                     fakes.node_name,
-                     fakes.node_owner,
-                     '',
-                     fakes.lease_resource_class,
-                     '', '',
-                     fakes.node_properties,
-                     '', '', '', ''
-                     ),)
+        datalist = (
+            (
+                fakes.node_uuid,
+                fakes.node_name,
+                fakes.node_owner,
+                "",
+                fakes.lease_resource_class,
+                "",
+                "",
+                fakes.node_properties,
+                "",
+                "",
+                "",
+                "",
+            ),
+        )
         self.assertEqual(datalist, tuple(data))
 
-    @mock.patch('esileapclient.common.utils.filter_nodes_by_properties')
+    @mock.patch("esileapclient.common.utils.filter_nodes_by_properties")
     def test_node_list_with_property_filter(self, mock_filter_nodes):
-        arglist = ['--property', 'cpus>=40']
-        verifylist = [('properties', ['cpus>=40'])]
+        arglist = ["--property", "cpus>=40"]
+        verifylist = [("properties", ["cpus>=40"])]
 
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
         columns, data = self.cmd.take_action(parsed_args)
 
         filters = {
-            'resource_class': parsed_args.resource_class,
-            'owner': parsed_args.owner,
-            'lessee': parsed_args.lessee
+            "resource_class": parsed_args.resource_class,
+            "owner": parsed_args.owner,
+            "lessee": parsed_args.lessee,
         }
 
         self.client_mock.nodes.assert_called_with(**filters)
         mock_filter_nodes.assert_called_with(mock.ANY, parsed_args.properties)
 
-    @mock.patch('esileapclient.common.utils.filter_nodes_by_properties')
+    @mock.patch("esileapclient.common.utils.filter_nodes_by_properties")
     def test_node_list_long_with_property_filter(self, mock_filter_nodes):
-        arglist = ['--long', '--property', 'memory_mb>=131072']
-        verifylist = [('long', True), ('properties', ['memory_mb>=131072'])]
+        arglist = ["--long", "--property", "memory_mb>=131072"]
+        verifylist = [("long", True), ("properties", ["memory_mb>=131072"])]
 
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
         columns, data = self.cmd.take_action(parsed_args)
 
         filters = {
-            'resource_class': parsed_args.resource_class,
-            'owner': parsed_args.owner,
-            'lessee': parsed_args.lessee
+            "resource_class": parsed_args.resource_class,
+            "owner": parsed_args.owner,
+            "lessee": parsed_args.lessee,
         }
 
         self.client_mock.nodes.assert_called_with(**filters)

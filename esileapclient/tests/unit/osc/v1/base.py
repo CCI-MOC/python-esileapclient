@@ -16,7 +16,6 @@ from osc_lib.tests import utils
 
 
 class TestESILeapCommand(utils.TestCommand):
-
     def setUp(self):
         super(TestESILeapCommand, self).setUp()
 
@@ -28,5 +27,5 @@ class FakeResource(object):
     def __init__(self, info):
         self.__name__ = type(self).__name__
         self._info = info
-        for (k, v) in info.items():
+        for k, v in info.items():
             setattr(self, k, v)

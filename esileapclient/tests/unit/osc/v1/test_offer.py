@@ -21,7 +21,6 @@ from esileapclient.tests.unit.osc.v1 import fakes
 
 
 class TestOffer(base.TestESILeapCommand):
-
     def setUp(self):
         super(TestOffer, self).setUp()
 
@@ -30,37 +29,41 @@ class TestOffer(base.TestESILeapCommand):
 
 
 class TestOfferCreate(TestOffer):
-
     def setUp(self):
         super(TestOfferCreate, self).setUp()
 
-        self.client_mock.create_offer.return_value = (
-            base.FakeResource(copy.deepcopy(fakes.OFFER))
+        self.client_mock.create_offer.return_value = base.FakeResource(
+            copy.deepcopy(fakes.OFFER)
         )
 
         # Get the command object to test
         self.cmd = offer.CreateOffer(self.app, None)
 
     def test_offer_create(self):
-
         arglist = [
             fakes.lease_resource_uuid,
-            '--end-time', fakes.lease_end_time,
-            '--lessee', fakes.offer_lessee_id,
-            '--name', fakes.offer_name,
-            '--properties', fakes.lease_properties,
-            '--resource-type', fakes.lease_resource_type,
-            '--start-time', fakes.lease_start_time,
+            "--end-time",
+            fakes.lease_end_time,
+            "--lessee",
+            fakes.offer_lessee_id,
+            "--name",
+            fakes.offer_name,
+            "--properties",
+            fakes.lease_properties,
+            "--resource-type",
+            fakes.lease_resource_type,
+            "--start-time",
+            fakes.lease_start_time,
         ]
 
         verifylist = [
-            ('end_time', fakes.lease_end_time),
-            ('lessee_id', fakes.offer_lessee_id),
-            ('name', fakes.offer_name),
-            ('properties', fakes.lease_properties),
-            ('resource_type', fakes.lease_resource_type),
-            ('resource_uuid', fakes.lease_resource_uuid),
-            ('start_time', fakes.lease_start_time),
+            ("end_time", fakes.lease_end_time),
+            ("lessee_id", fakes.offer_lessee_id),
+            ("name", fakes.offer_name),
+            ("properties", fakes.lease_properties),
+            ("resource_type", fakes.lease_resource_type),
+            ("resource_uuid", fakes.lease_resource_uuid),
+            ("start_time", fakes.lease_start_time),
         ]
 
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
@@ -68,13 +71,13 @@ class TestOfferCreate(TestOffer):
         self.cmd.take_action(parsed_args)
 
         args = {
-            'end_time': fakes.lease_end_time,
-            'lessee_id': fakes.offer_lessee_id,
-            'name': fakes.offer_name,
-            'properties': json.loads(fakes.lease_properties),
-            'resource_type': fakes.lease_resource_type,
-            'resource_uuid': fakes.lease_resource_uuid,
-            'start_time': fakes.lease_start_time,
+            "end_time": fakes.lease_end_time,
+            "lessee_id": fakes.offer_lessee_id,
+            "name": fakes.offer_name,
+            "properties": json.loads(fakes.lease_properties),
+            "resource_type": fakes.lease_resource_type,
+            "resource_uuid": fakes.lease_resource_uuid,
+            "start_time": fakes.lease_start_time,
         }
 
         self.client_mock.create_offer.assert_called_once_with(**args)
@@ -97,19 +100,23 @@ class TestOfferList(TestOffer):
         columns, data = self.cmd.take_action(parsed_args)
 
         filters = {
-            'status': parsed_args.status,
-            'start_time': str(parsed_args.time_range[0]) if
-            parsed_args.time_range else None,
-            'end_time': str(parsed_args.time_range[1]) if
-            parsed_args.time_range else None,
-            'available_start_time': str(parsed_args.availability_range[0]) if
-            parsed_args.availability_range else None,
-            'available_end_time': str(parsed_args.availability_range[1]) if
-            parsed_args.availability_range else None,
-            'project_id': parsed_args.project_id,
-            'resource_type': parsed_args.resource_type,
-            'resource_uuid': parsed_args.resource_uuid,
-            'resource_class': parsed_args.resource_class
+            "status": parsed_args.status,
+            "start_time": str(parsed_args.time_range[0])
+            if parsed_args.time_range
+            else None,
+            "end_time": str(parsed_args.time_range[1])
+            if parsed_args.time_range
+            else None,
+            "available_start_time": str(parsed_args.availability_range[0])
+            if parsed_args.availability_range
+            else None,
+            "available_end_time": str(parsed_args.availability_range[1])
+            if parsed_args.availability_range
+            else None,
+            "project_id": parsed_args.project_id,
+            "resource_type": parsed_args.resource_type,
+            "resource_uuid": parsed_args.resource_uuid,
+            "resource_class": parsed_args.resource_class,
         }
 
         self.client_mock.offers.assert_called_with(**filters)
@@ -127,121 +134,139 @@ class TestOfferList(TestOffer):
 
         self.assertEqual(collist, list(columns))
 
-        datalist = ((fakes.offer_uuid,
-                     fakes.lease_resource,
-                     fakes.lease_resource_class,
-                     fakes.offer_lessee,
-                     fakes.lease_start_time,
-                     fakes.lease_end_time,
-                     fakes.lease_status,
-                     json.loads(fakes.lease_availabilities)
-                     ),)
+        datalist = (
+            (
+                fakes.offer_uuid,
+                fakes.lease_resource,
+                fakes.lease_resource_class,
+                fakes.offer_lessee,
+                fakes.lease_start_time,
+                fakes.lease_end_time,
+                fakes.lease_status,
+                json.loads(fakes.lease_availabilities),
+            ),
+        )
         self.assertEqual(datalist, tuple(data))
 
-    @mock.patch('esileapclient.common.utils.filter_nodes_by_properties')
+    @mock.patch("esileapclient.common.utils.filter_nodes_by_properties")
     def test_offer_list_with_property_filter(self, mock_filter_nodes):
-        arglist = ['--property', 'cpus>=40']
-        verifylist = [('properties', ['cpus>=40'])]
+        arglist = ["--property", "cpus>=40"]
+        verifylist = [("properties", ["cpus>=40"])]
 
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
         columns, data = self.cmd.take_action(parsed_args)
 
         filters = {
-            'status': parsed_args.status,
-            'start_time': str(parsed_args.time_range[0]) if
-            parsed_args.time_range else None,
-            'end_time': str(parsed_args.time_range[1]) if
-            parsed_args.time_range else None,
-            'available_start_time': str(parsed_args.availability_range[0]) if
-            parsed_args.availability_range else None,
-            'available_end_time': str(parsed_args.availability_range[1]) if
-            parsed_args.availability_range else None,
-            'project_id': parsed_args.project_id,
-            'resource_type': parsed_args.resource_type,
-            'resource_uuid': parsed_args.resource_uuid,
-            'resource_class': parsed_args.resource_class
+            "status": parsed_args.status,
+            "start_time": str(parsed_args.time_range[0])
+            if parsed_args.time_range
+            else None,
+            "end_time": str(parsed_args.time_range[1])
+            if parsed_args.time_range
+            else None,
+            "available_start_time": str(parsed_args.availability_range[0])
+            if parsed_args.availability_range
+            else None,
+            "available_end_time": str(parsed_args.availability_range[1])
+            if parsed_args.availability_range
+            else None,
+            "project_id": parsed_args.project_id,
+            "resource_type": parsed_args.resource_type,
+            "resource_uuid": parsed_args.resource_uuid,
+            "resource_class": parsed_args.resource_class,
         }
 
         self.client_mock.offers.assert_called_with(**filters)
         mock_filter_nodes.assert_called_with(mock.ANY, parsed_args.properties)
 
     def test_offer_list_long(self):
-        arglist = ['--long']
-        verifylist = [('long', True)]
+        arglist = ["--long"]
+        verifylist = [("long", True)]
 
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
         columns, data = self.cmd.take_action(parsed_args)
 
         filters = {
-            'status': parsed_args.status,
-            'start_time': str(parsed_args.time_range[0]) if
-            parsed_args.time_range else None,
-            'end_time': str(parsed_args.time_range[1]) if
-            parsed_args.time_range else None,
-            'available_start_time': str(parsed_args.availability_range[0]) if
-            parsed_args.availability_range else None,
-            'available_end_time': str(parsed_args.availability_range[1]) if
-            parsed_args.availability_range else None,
-            'project_id': parsed_args.project_id,
-            'resource_type': parsed_args.resource_type,
-            'resource_uuid': parsed_args.resource_uuid,
-            'resource_class': parsed_args.resource_class
+            "status": parsed_args.status,
+            "start_time": str(parsed_args.time_range[0])
+            if parsed_args.time_range
+            else None,
+            "end_time": str(parsed_args.time_range[1])
+            if parsed_args.time_range
+            else None,
+            "available_start_time": str(parsed_args.availability_range[0])
+            if parsed_args.availability_range
+            else None,
+            "available_end_time": str(parsed_args.availability_range[1])
+            if parsed_args.availability_range
+            else None,
+            "project_id": parsed_args.project_id,
+            "resource_type": parsed_args.resource_type,
+            "resource_uuid": parsed_args.resource_uuid,
+            "resource_class": parsed_args.resource_class,
         }
 
         self.client_mock.offers.assert_called_with(**filters)
 
         long_collist = [
-            'UUID',
-            'Resource',
-            'Resource Class',
-            'Resource Properties',
-            'Lessee',
-            'Start Time',
-            'End Time',
-            'Status',
-            'Availabilities',
-            'Project',
-            'Parent Lease UUID'
+            "UUID",
+            "Resource",
+            "Resource Class",
+            "Resource Properties",
+            "Lessee",
+            "Start Time",
+            "End Time",
+            "Status",
+            "Availabilities",
+            "Project",
+            "Parent Lease UUID",
         ]
 
         self.assertEqual(long_collist, list(columns))
 
-        datalist = ((fakes.offer_uuid,
-                     fakes.lease_resource,
-                     fakes.lease_resource_class,
-                     fakes.node_properties,
-                     fakes.offer_lessee,
-                     fakes.lease_start_time,
-                     fakes.lease_end_time,
-                     fakes.lease_status,
-                     json.loads(fakes.lease_availabilities),
-                     fakes.lease_project,
-                     fakes.parent_lease_uuid
-                     ),)
+        datalist = (
+            (
+                fakes.offer_uuid,
+                fakes.lease_resource,
+                fakes.lease_resource_class,
+                fakes.node_properties,
+                fakes.offer_lessee,
+                fakes.lease_start_time,
+                fakes.lease_end_time,
+                fakes.lease_status,
+                json.loads(fakes.lease_availabilities),
+                fakes.lease_project,
+                fakes.parent_lease_uuid,
+            ),
+        )
         self.assertEqual(datalist, tuple(data))
 
-    @mock.patch('esileapclient.common.utils.filter_nodes_by_properties')
+    @mock.patch("esileapclient.common.utils.filter_nodes_by_properties")
     def test_offer_list_long_with_property_filter(self, mock_filter_nodes):
-        arglist = ['--long', '--property', 'memory_mb>=131072']
-        verifylist = [('long', True), ('properties', ['memory_mb>=131072'])]
+        arglist = ["--long", "--property", "memory_mb>=131072"]
+        verifylist = [("long", True), ("properties", ["memory_mb>=131072"])]
 
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
         columns, data = self.cmd.take_action(parsed_args)
 
         filters = {
-            'status': parsed_args.status,
-            'start_time': str(parsed_args.time_range[0]) if
-            parsed_args.time_range else None,
-            'end_time': str(parsed_args.time_range[1]) if
-            parsed_args.time_range else None,
-            'available_start_time': str(parsed_args.availability_range[0]) if
-            parsed_args.availability_range else None,
-            'available_end_time': str(parsed_args.availability_range[1]) if
-            parsed_args.availability_range else None,
-            'project_id': parsed_args.project_id,
-            'resource_type': parsed_args.resource_type,
-            'resource_uuid': parsed_args.resource_uuid,
-            'resource_class': parsed_args.resource_class
+            "status": parsed_args.status,
+            "start_time": str(parsed_args.time_range[0])
+            if parsed_args.time_range
+            else None,
+            "end_time": str(parsed_args.time_range[1])
+            if parsed_args.time_range
+            else None,
+            "available_start_time": str(parsed_args.availability_range[0])
+            if parsed_args.availability_range
+            else None,
+            "available_end_time": str(parsed_args.availability_range[1])
+            if parsed_args.availability_range
+            else None,
+            "project_id": parsed_args.project_id,
+            "resource_type": parsed_args.resource_type,
+            "resource_uuid": parsed_args.resource_uuid,
+            "resource_class": parsed_args.resource_class,
         }
 
         self.client_mock.offers.assert_called_with(**filters)
@@ -252,20 +277,20 @@ class TestOfferShow(TestOffer):
     def setUp(self):
         super(TestOfferShow, self).setUp()
 
-        self.client_mock.get_offer.return_value = \
-            base.FakeResource(copy.deepcopy(fakes.OFFER))
+        self.client_mock.get_offer.return_value = base.FakeResource(
+            copy.deepcopy(fakes.OFFER)
+        )
 
         self.cmd = offer.ShowOffer(self.app, None)
 
     def test_offer_show(self):
         arglist = [fakes.offer_uuid]
-        verifylist = [('uuid', fakes.offer_uuid)]
+        verifylist = [("uuid", fakes.offer_uuid)]
 
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
         columns, data = self.cmd.take_action(parsed_args)
 
-        self.client_mock.get_offer.assert_called_once_with(
-            fakes.offer_uuid)
+        self.client_mock.get_offer.assert_called_once_with(fakes.offer_uuid)
 
         collist = (
             "availabilities",
@@ -284,37 +309,42 @@ class TestOfferShow(TestOffer):
             "resource_uuid",
             "start_time",
             "status",
-            "uuid"
+            "uuid",
         )
 
         self.assertEqual(collist, columns)
 
-        datalist = (json.loads(fakes.lease_availabilities),
-                    fakes.lease_end_time,
-                    fakes.offer_lessee,
-                    fakes.offer_lessee_id,
-                    fakes.offer_name,
-                    fakes.parent_lease_uuid,
-                    fakes.lease_project,
-                    fakes.lease_project_id,
-                    json.loads(fakes.lease_properties),
-                    fakes.lease_resource,
-                    fakes.lease_resource_class,
-                    fakes.node_properties,
-                    fakes.lease_resource_type,
-                    fakes.lease_resource_uuid,
-                    fakes.lease_start_time,
-                    fakes.lease_status,
-                    fakes.offer_uuid,
-                    )
+        datalist = (
+            json.loads(fakes.lease_availabilities),
+            fakes.lease_end_time,
+            fakes.offer_lessee,
+            fakes.offer_lessee_id,
+            fakes.offer_name,
+            fakes.parent_lease_uuid,
+            fakes.lease_project,
+            fakes.lease_project_id,
+            json.loads(fakes.lease_properties),
+            fakes.lease_resource,
+            fakes.lease_resource_class,
+            fakes.node_properties,
+            fakes.lease_resource_type,
+            fakes.lease_resource_uuid,
+            fakes.lease_start_time,
+            fakes.lease_status,
+            fakes.offer_uuid,
+        )
         self.assertEqual(datalist, tuple(data))
 
     def test_offer_show_no_id(self):
         arglist = []
         verifylist = []
-        self.assertRaises(osctestutils.ParserException,
-                          self.check_parser,
-                          self.cmd, arglist, verifylist)
+        self.assertRaises(
+            osctestutils.ParserException,
+            self.check_parser,
+            self.cmd,
+            arglist,
+            verifylist,
+        )
 
 
 class TestOfferDelete(TestOffer):
@@ -325,20 +355,23 @@ class TestOfferDelete(TestOffer):
 
     def test_offer_delete(self):
         arglist = [fakes.offer_uuid]
-        verifylist = [('uuid', fakes.offer_uuid)]
+        verifylist = [("uuid", fakes.offer_uuid)]
 
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
         self.cmd.take_action(parsed_args)
 
-        self.client_mock.delete_offer.assert_called_once_with(
-            fakes.offer_uuid)
+        self.client_mock.delete_offer.assert_called_once_with(fakes.offer_uuid)
 
     def test_offer_delete_no_id(self):
         arglist = []
         verifylist = []
-        self.assertRaises(osctestutils.ParserException,
-                          self.check_parser,
-                          self.cmd, arglist, verifylist)
+        self.assertRaises(
+            osctestutils.ParserException,
+            self.check_parser,
+            self.cmd,
+            arglist,
+            verifylist,
+        )
 
 
 class TestOfferClaim(TestOffer):
@@ -350,32 +383,40 @@ class TestOfferClaim(TestOffer):
     def test_offer_claim(self):
         arglist = [
             fakes.offer_uuid,
-            '--end-time', fakes.lease_end_time,
-            '--properties', fakes.lease_properties,
-            '--start-time', fakes.lease_start_time,
+            "--end-time",
+            fakes.lease_end_time,
+            "--properties",
+            fakes.lease_properties,
+            "--start-time",
+            fakes.lease_start_time,
         ]
         verifylist = [
-            ('offer_uuid', fakes.offer_uuid),
-            ('end_time', fakes.lease_end_time),
-            ('properties', fakes.lease_properties),
-            ('start_time', fakes.lease_start_time),
+            ("offer_uuid", fakes.offer_uuid),
+            ("end_time", fakes.lease_end_time),
+            ("properties", fakes.lease_properties),
+            ("start_time", fakes.lease_start_time),
         ]
 
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
         self.cmd.take_action(parsed_args)
 
         lease_args = {
-            'end_time': fakes.lease_end_time,
-            'properties': json.loads(fakes.lease_properties),
-            'start_time': fakes.lease_start_time,
+            "end_time": fakes.lease_end_time,
+            "properties": json.loads(fakes.lease_properties),
+            "start_time": fakes.lease_start_time,
         }
 
         self.client_mock.claim_offer.assert_called_once_with(
-            fakes.offer_uuid, **lease_args)
+            fakes.offer_uuid, **lease_args
+        )
 
     def test_offer_claim_no_id(self):
         arglist = []
         verifylist = []
-        self.assertRaises(osctestutils.ParserException,
-                          self.check_parser,
-                          self.cmd, arglist, verifylist)
+        self.assertRaises(
+            osctestutils.ParserException,
+            self.check_parser,
+            self.cmd,
+            arglist,
+            verifylist,
+        )
