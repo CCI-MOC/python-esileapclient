@@ -18,14 +18,13 @@ LOG = logging.getLogger(__name__)
 
 
 class ConsoleAuthToken(base.Resource):
-
     fields = {
-        'node_uuid': "Node UUID",
-        'token': "Token",
-        'access_url': "Access URL",
+        "node_uuid": "Node UUID",
+        "token": "Token",
+        "access_url": "Access URL",
     }
 
-    _creation_attributes = ['node_uuid_or_name', 'token_ttl']
+    _creation_attributes = ["node_uuid_or_name", "token_ttl"]
 
     def __repr__(self):
         return "<ConsoleAuthToken %s>" % self._info

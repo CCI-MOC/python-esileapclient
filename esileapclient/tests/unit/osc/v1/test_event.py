@@ -18,7 +18,6 @@ from esileapclient.tests.unit.osc.v1 import fakes
 
 
 class TestEvent(base.TestESILeapCommand):
-
     def setUp(self):
         super(TestEvent, self).setUp()
 
@@ -27,7 +26,6 @@ class TestEvent(base.TestESILeapCommand):
 
 
 class TestEventList(TestEvent):
-
     def setUp(self):
         super(TestEventList, self).setUp()
 
@@ -44,12 +42,12 @@ class TestEventList(TestEvent):
         columns, data = self.cmd.take_action(parsed_args)
 
         filters = {
-            'lessee_or_owner_id': parsed_args.project_id,
-            'last_event_id': parsed_args.last_event_id,
-            'last_event_time': parsed_args.last_event_time,
-            'event_type': parsed_args.event_type,
-            'resource_type': parsed_args.resource_type,
-            'resource_uuid': parsed_args.resource_uuid,
+            "lessee_or_owner_id": parsed_args.project_id,
+            "last_event_id": parsed_args.last_event_id,
+            "last_event_time": parsed_args.last_event_time,
+            "event_type": parsed_args.event_type,
+            "resource_type": parsed_args.resource_type,
+            "resource_uuid": parsed_args.resource_uuid,
         }
 
         self.client_mock.events.assert_called_with(**filters)
@@ -68,14 +66,17 @@ class TestEventList(TestEvent):
 
         self.assertEqual(collist, list(columns))
 
-        datalist = ((fakes.event_id,
-                     fakes.event_type,
-                     fakes.event_time,
-                     fakes.object_type,
-                     fakes.lease_uuid,
-                     fakes.lease_resource_type,
-                     fakes.lease_resource_uuid,
-                     fakes.lease_project_id,
-                     fakes.lease_owner_id,
-                     ),)
+        datalist = (
+            (
+                fakes.event_id,
+                fakes.event_type,
+                fakes.event_time,
+                fakes.object_type,
+                fakes.lease_uuid,
+                fakes.lease_resource_type,
+                fakes.lease_resource_uuid,
+                fakes.lease_project_id,
+                fakes.lease_owner_id,
+            ),
+        )
         self.assertEqual(datalist, tuple(data))

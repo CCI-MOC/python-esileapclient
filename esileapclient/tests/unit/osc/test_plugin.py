@@ -17,45 +17,44 @@ from esileapclient.osc import plugin
 
 from esi import connection
 
-API_VERSION = '1'
+API_VERSION = "1"
 
 
 class FakeClientManager(object):
     def __init__(self):
         self.identity = None
         self.auth_ref = None
-        self.interface = 'public'
-        self._region_name = 'RegionOne'
-        self.session = 'fake session'
-        self._api_version = {'lease': API_VERSION}
+        self.interface = "public"
+        self._region_name = "RegionOne"
+        self.session = "fake session"
+        self._api_version = {"lease": API_VERSION}
         self._cli_options = None
 
 
 class MakeClientTest(testtools.TestCase):
-
-    @mock.patch.object(connection, 'ESIConnection')
+    @mock.patch.object(connection, "ESIConnection")
     def test_make_client_explicit_version(self, mock_conn):
         instance = FakeClientManager()
         mock_conn.return_value.lease = mock.Mock()
-        instance._api_version = {'lease': API_VERSION}
+        instance._api_version = {"lease": API_VERSION}
         lease = plugin.make_client(instance)
         mock_conn.assert_called_once_with(config=None)
         self.assertEqual(lease, mock_conn.return_value.lease)
 
-    @mock.patch.object(connection, 'ESIConnection')
+    @mock.patch.object(connection, "ESIConnection")
     def test_make_client_latest(self, mock_conn):
         instance = FakeClientManager()
         mock_conn.return_value.lease = mock.Mock()
-        instance._api_version = {'lease': plugin.LATEST_VERSION}
+        instance._api_version = {"lease": plugin.LATEST_VERSION}
         lease = plugin.make_client(instance)
         mock_conn.assert_called_once_with(config=None)
         self.assertEqual(lease, mock_conn.return_value.lease)
 
-    @mock.patch.object(connection, 'ESIConnection')
+    @mock.patch.object(connection, "ESIConnection")
     def test_make_client_v1(self, mock_conn):
         instance = FakeClientManager()
         mock_conn.return_value.lease = mock.Mock()
-        instance._api_version = {'lease': '1'}
+        instance._api_version = {"lease": "1"}
         lease = plugin.make_client(instance)
         mock_conn.assert_called_once_with(config=None)
         self.assertEqual(lease, mock_conn.return_value.lease)

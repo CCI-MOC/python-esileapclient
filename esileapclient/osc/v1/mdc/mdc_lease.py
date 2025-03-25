@@ -31,61 +31,68 @@ class MDCListLease(command.Lister):
         parser = super(MDCListLease, self).get_parser(prog_name)
 
         parser.add_argument(
-            '--clouds',
-            dest='clouds',
-            metavar='<clouds>',
+            "--clouds",
+            dest="clouds",
+            metavar="<clouds>",
             nargs="+",
-            help="Specify the cloud to use from clouds.yaml."
+            help="Specify the cloud to use from clouds.yaml.",
         )
         parser.add_argument(
-            '--status',
-            dest='status',
+            "--status",
+            dest="status",
             required=False,
-            help="Show all leases with given status.")
+            help="Show all leases with given status.",
+        )
         parser.add_argument(
-            '--time-range',
-            dest='time_range',
+            "--time-range",
+            dest="time_range",
             nargs=2,
             required=False,
             help="Show all leases with start and end times "
-                 "which begin and end in the given range."
-                 "Must pass in two valid datetime strings."
-                 "Example: --time-range 2020-06-30T00:00:00"
-                 "2021-06-30T00:00:00")
+            "which begin and end in the given range."
+            "Must pass in two valid datetime strings."
+            "Example: --time-range 2020-06-30T00:00:00"
+            "2021-06-30T00:00:00",
+        )
         parser.add_argument(
-            '--resource-type',
-            dest='resource_type',
+            "--resource-type",
+            dest="resource_type",
             required=False,
-            help="Show all leases with given resource-type.")
+            help="Show all leases with given resource-type.",
+        )
         parser.add_argument(
-            '--resource-class',
-            dest='resource_class',
+            "--resource-class",
+            dest="resource_class",
             required=False,
-            help="Show all leases with given resource-class.")
+            help="Show all leases with given resource-class.",
+        )
         parser.add_argument(
-            '--purpose',
-            dest='purpose',
+            "--purpose",
+            dest="purpose",
             required=False,
-            help="Show all the leases with given purpose")
+            help="Show all the leases with given purpose",
+        )
         return parser
 
     def take_action(self, parsed_args):
         data = []
 
-        cloud_regions = openstack.config.loader.OpenStackConfig().\
-            get_all_clouds()
+        cloud_regions = openstack.config.loader.OpenStackConfig().get_all_clouds()
         if parsed_args.clouds:
-            cloud_regions = filter(lambda c: c.name in parsed_args.clouds,
-                                   cloud_regions)
+            cloud_regions = filter(
+                lambda c: c.name in parsed_args.clouds, cloud_regions
+            )
         filters = {
-            'status': parsed_args.status,
-            'start_time': str(parsed_args.time_range[0]) if
-            parsed_args.time_range else None,
-            'end_time': str(parsed_args.time_range[1]) if
-            parsed_args.time_range else None,
-            'resource_type': parsed_args.resource_type,
-            'resource_class': parsed_args.resource_class,
-            'purpose': parsed_args.purpose,
+            "status": parsed_args.status,
+            "start_time": str(parsed_args.time_range[0])
+            if parsed_args.time_range
+            else None,
+            "end_time": str(parsed_args.time_range[1])
+            if parsed_args.time_range
+            else None,
+            "resource_type": parsed_args.resource_type,
+            "resource_class": parsed_args.resource_class,
+            "purpose": parsed_args.purpose,
         }
 
         for c in cloud_regions:
@@ -94,11 +101,10 @@ class MDCListLease(command.Lister):
             leases = list(client.leases(**filters))
             for lease in leases:
                 lease.cloud = c.name
-                lease.region = c.config['region_name']
+                lease.region = c.config["region_name"]
                 data += [lease]
 
-        columns = ['cloud', 'region'] + list(LEASE_RESOURCE.fields.keys())
-        labels = ['Cloud', 'Region'] + list(LEASE_RESOURCE.fields.values())
+        columns = ["cloud", "region"] + list(LEASE_RESOURCE.fields.keys())
+        labels = ["Cloud", "Region"] + list(LEASE_RESOURCE.fields.values())
 
-        return (labels,
-                (oscutils.get_item_properties(s, columns) for s in data))
+        return (labels, (oscutils.get_item_properties(s, columns) for s in data))

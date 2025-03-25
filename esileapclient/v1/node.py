@@ -19,37 +19,45 @@ LOG = logging.getLogger(__name__)
 
 
 class Node(base.Resource):
-
     detailed_fields = {
-        'uuid': "UUID",
-        'name': "Name",
-        'owner': "Owner",
-        'lessee': "Lessee",
-        'resource_class': "Resource Class",
-        'provision_state': "Provision State",
-        'maintenance': "Maintenance",
-        'properties': "Properties",
-        'offer_uuid': "Offer UUID",
-        'lease_uuid': "Lease UUID",
-        'future_offers': "Future Offers",
-        'future_leases': "Future Leases"
+        "uuid": "UUID",
+        "name": "Name",
+        "owner": "Owner",
+        "lessee": "Lessee",
+        "resource_class": "Resource Class",
+        "provision_state": "Provision State",
+        "maintenance": "Maintenance",
+        "properties": "Properties",
+        "offer_uuid": "Offer UUID",
+        "lease_uuid": "Lease UUID",
+        "future_offers": "Future Offers",
+        "future_leases": "Future Leases",
     }
 
     fields = {
-        'name': "Name",
-        'owner': "Owner",
-        'lessee': "Lessee",
-        'resource_class': "Resource Class",
-        'provision_state': "Provision State",
-        'maintenance': "Maintenance",
-        'offer_uuid': "Offer UUID",
-        'lease_uuid': "Lease UUID",
+        "name": "Name",
+        "owner": "Owner",
+        "lessee": "Lessee",
+        "resource_class": "Resource Class",
+        "provision_state": "Provision State",
+        "maintenance": "Maintenance",
+        "offer_uuid": "Offer UUID",
+        "lease_uuid": "Lease UUID",
     }
 
-    _creation_attributes = ['name', 'uuid', 'owner', 'offer_uuid',
-                            'lessee', 'lease_uuid', 'future_offers',
-                            'future_leases', 'resource_class',
-                            'provision_state', 'maintenance']
+    _creation_attributes = [
+        "name",
+        "uuid",
+        "owner",
+        "offer_uuid",
+        "lessee",
+        "lease_uuid",
+        "future_offers",
+        "future_leases",
+        "resource_class",
+        "provision_state",
+        "maintenance",
+    ]
 
     def __repr__(self):
         return "<Node %s>" % self._info

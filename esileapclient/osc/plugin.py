@@ -15,18 +15,18 @@ import logging
 from openstackclient.i18n import _
 
 
-DEFAULT_API_VERSION = '1'
+DEFAULT_API_VERSION = "1"
 
 # Required by the OSC plugin interface
-API_NAME = 'lease'
-API_VERSION_OPTION = 'os_esileap_api_version'
+API_NAME = "lease"
+API_VERSION_OPTION = "os_esileap_api_version"
 API_VERSIONS = {
-    '1': 'esi.connection.ESIConnection',
+    "1": "esi.connection.ESIConnection",
 }
 
 OS_LEASE_API_LATEST = True
-LAST_KNOWN_API_VERSION = '1'
-LATEST_VERSION = '1'
+LAST_KNOWN_API_VERSION = "1"
+LATEST_VERSION = "1"
 
 
 LOG = logging.getLogger(__name__)
@@ -44,7 +44,6 @@ def make_client(instance):
 
 
 def build_option_parser(parser):
-
     """Hook to add global options
 
     Called from openstackclient.shell.OpenStackShell.__init__()
@@ -55,11 +54,10 @@ def build_option_parser(parser):
         initialized by OpenStackShell.
     """
     parser.add_argument(
-        '--os-esileap-api-version',
-        metavar='<os_esileap_api_version>',
+        "--os-esileap-api-version",
+        metavar="<os_esileap_api_version>",
         default=DEFAULT_API_VERSION,
-        help=_('ESI-LEAP API version, default=%s')
-        % DEFAULT_API_VERSION,
+        help=_("ESI-LEAP API version, default=%s") % DEFAULT_API_VERSION,
     )
 
     return parser

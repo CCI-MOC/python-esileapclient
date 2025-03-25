@@ -30,46 +30,44 @@ class ListNode(command.Lister):
         parser = super(ListNode, self).get_parser(prog_name)
 
         parser.add_argument(
-            '--long',
+            "--long",
             default=False,
             help="Show detailed information about the nodes.",
-            action='store_true')
+            action="store_true",
+        )
         parser.add_argument(
-            '--resource-class',
-            dest='resource_class',
+            "--resource-class",
+            dest="resource_class",
             required=False,
-            help="Filter nodes by resource class.")
+            help="Filter nodes by resource class.",
+        )
         parser.add_argument(
-            '--owner',
-            dest='owner',
-            required=False,
-            help="Filter nodes by owner.")
+            "--owner", dest="owner", required=False, help="Filter nodes by owner."
+        )
         parser.add_argument(
-            '--lessee',
-            dest='lessee',
-            required=False,
-            help="Filter nodes by lessee.")
+            "--lessee", dest="lessee", required=False, help="Filter nodes by lessee."
+        )
         parser.add_argument(
-            '--property',
-            dest='properties',
+            "--property",
+            dest="properties",
             required=False,
-            action='append',
+            action="append",
             help="Filter offers by properties. Format: 'key>=value'. "
-                 "Can be specified multiple times. "
-                 f"Supported operators are: {', '.join(utils.OPS.keys())}",
-            metavar='"key>=value"')
+            "Can be specified multiple times. "
+            f"Supported operators are: {', '.join(utils.OPS.keys())}",
+            metavar='"key>=value"',
+        )
 
         return parser
 
     def take_action(self, parsed_args):
-
         client = self.app.client_manager.lease
 
         # Initial filters dictionary
         filters = {
-            'resource_class': parsed_args.resource_class,
-            'owner': parsed_args.owner,
-            'lessee': parsed_args.lessee
+            "resource_class": parsed_args.resource_class,
+            "owner": parsed_args.owner,
+            "lessee": parsed_args.lessee,
         }
 
         # Retrieve all nodes with initial filters
@@ -87,6 +85,7 @@ class ListNode(command.Lister):
             columns = NODE_RESOURCE.fields.keys()
             labels = NODE_RESOURCE.fields.values()
 
-        return (labels,
-                (oscutils.get_item_properties(s, columns)
-                 for s in filtered_nodes))
+        return (
+            labels,
+            (oscutils.get_item_properties(s, columns) for s in filtered_nodes),
+        )

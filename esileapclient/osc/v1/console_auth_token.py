@@ -14,8 +14,9 @@ import logging
 
 from osc_lib.command import command
 
-from esileapclient.v1.console_auth_token import ConsoleAuthToken \
-    as CONSOLE_AUTH_TOKEN_RESOURCE
+from esileapclient.v1.console_auth_token import (
+    ConsoleAuthToken as CONSOLE_AUTH_TOKEN_RESOURCE,
+)
 
 
 LOG = logging.getLogger(__name__)
@@ -30,15 +31,15 @@ class CreateConsoleAuthToken(command.ShowOne):
         parser = super(CreateConsoleAuthToken, self).get_parser(prog_name)
 
         parser.add_argument(
-            "node_uuid_or_name",
-            metavar="<node_uuid_or_name>",
-            help="Node UUID or name")
+            "node_uuid_or_name", metavar="<node_uuid_or_name>", help="Node UUID or name"
+        )
         parser.add_argument(
-            '--token-ttl',
-            dest='token_ttl',
+            "--token-ttl",
+            dest="token_ttl",
             metavar="<token_ttl>",
             required=False,
-            help="TTL of token.")
+            help="TTL of token.",
+        )
 
         return parser
 
@@ -47,13 +48,17 @@ class CreateConsoleAuthToken(command.ShowOne):
 
         field_list = CONSOLE_AUTH_TOKEN_RESOURCE._creation_attributes
 
-        fields = dict((k, v) for (k, v) in vars(parsed_args).items()
-                      if k in field_list and v is not None)
+        fields = dict(
+            (k, v)
+            for (k, v) in vars(parsed_args).items()
+            if k in field_list and v is not None
+        )
 
         cat = client.create_console_auth_token(**fields)
 
-        data = dict([(f, getattr(cat, f, '')) for f in
-                     CONSOLE_AUTH_TOKEN_RESOURCE.fields])
+        data = dict(
+            [(f, getattr(cat, f, "")) for f in CONSOLE_AUTH_TOKEN_RESOURCE.fields]
+        )
 
         return self.dict2columns(data)
 
@@ -66,14 +71,14 @@ class DeleteConsoleAuthToken(command.Command):
     def get_parser(self, prog_name):
         parser = super(DeleteConsoleAuthToken, self).get_parser(prog_name)
         parser.add_argument(
-            "node_uuid_or_name",
-            metavar="<node_uuid_or_name>",
-            help="Node UUID or name")
+            "node_uuid_or_name", metavar="<node_uuid_or_name>", help="Node UUID or name"
+        )
 
         return parser
 
     def take_action(self, parsed_args):
         client = self.app.client_manager.lease
         client.delete_console_auth_token(parsed_args.node_uuid_or_name)
-        print('Disabled console auth tokens for node %s' %
-              parsed_args.node_uuid_or_name)
+        print(
+            "Disabled console auth tokens for node %s" % parsed_args.node_uuid_or_name
+        )

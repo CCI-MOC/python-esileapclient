@@ -34,72 +34,80 @@ class MDCListOffer(command.Lister):
         parser = super(MDCListOffer, self).get_parser(prog_name)
 
         parser.add_argument(
-            '--clouds',
-            dest='clouds',
-            metavar='<clouds>',
+            "--clouds",
+            dest="clouds",
+            metavar="<clouds>",
             nargs="+",
-            help="Specify the cloud to use from clouds.yaml."
+            help="Specify the cloud to use from clouds.yaml.",
         )
         parser.add_argument(
-            '--status',
-            dest='status',
+            "--status",
+            dest="status",
             required=False,
-            help="Show all offers with given status.")
+            help="Show all offers with given status.",
+        )
         parser.add_argument(
-            '--time-range',
-            dest='time_range',
+            "--time-range",
+            dest="time_range",
             nargs=2,
             required=False,
             help="Show all offers with start and end times "
-                 "which begin and end in the given range."
-                 "Must pass in two valid datetime strings."
-                 "Example: --time-range 2020-06-30T00:00:00"
-                 "2021-06-30T00:00:00")
+            "which begin and end in the given range."
+            "Must pass in two valid datetime strings."
+            "Example: --time-range 2020-06-30T00:00:00"
+            "2021-06-30T00:00:00",
+        )
         parser.add_argument(
-            '--availability-range',
-            dest='availability_range',
+            "--availability-range",
+            dest="availability_range",
             nargs=2,
             required=False,
             help="Show all offers with availabilities "
-                 "which will have no conflicting leases within "
-                 "the given range. Must pass in two valid datetime "
-                 "strings."
-                 "Example: --availability-range 2020-06-30T00:00:00"
-                 "2021-06-30T00:00:00")
+            "which will have no conflicting leases within "
+            "the given range. Must pass in two valid datetime "
+            "strings."
+            "Example: --availability-range 2020-06-30T00:00:00"
+            "2021-06-30T00:00:00",
+        )
         parser.add_argument(
-            '--resource-type',
-            dest='resource_type',
+            "--resource-type",
+            dest="resource_type",
             required=False,
-            help="Show all offers with given resource-type.")
+            help="Show all offers with given resource-type.",
+        )
         parser.add_argument(
-            '--resource-class',
-            dest='resource_class',
+            "--resource-class",
+            dest="resource_class",
             required=False,
-            help="Show all leases with given resource-class.")
+            help="Show all leases with given resource-class.",
+        )
 
         return parser
 
     def take_action(self, parsed_args):
         data = []
 
-        cloud_regions = openstack.config.loader.OpenStackConfig().\
-            get_all_clouds()
+        cloud_regions = openstack.config.loader.OpenStackConfig().get_all_clouds()
         if parsed_args.clouds:
-            cloud_regions = filter(lambda c: c.name in parsed_args.clouds,
-                                   cloud_regions)
+            cloud_regions = filter(
+                lambda c: c.name in parsed_args.clouds, cloud_regions
+            )
         filters = {
-            'status': parsed_args.status,
-            'start_time': str(parsed_args.time_range[0]) if
-            parsed_args.time_range else None,
-            'end_time': str(parsed_args.time_range[1]) if
-            parsed_args.time_range else None,
-            'available_start_time': str(
-                parsed_args.availability_range[0]) if
-            parsed_args.availability_range else None,
-            'available_end_time': str(parsed_args.availability_range[1]) if
-            parsed_args.availability_range else None,
-            'resource_type': parsed_args.resource_type,
-            'resource_class': parsed_args.resource_class,
+            "status": parsed_args.status,
+            "start_time": str(parsed_args.time_range[0])
+            if parsed_args.time_range
+            else None,
+            "end_time": str(parsed_args.time_range[1])
+            if parsed_args.time_range
+            else None,
+            "available_start_time": str(parsed_args.availability_range[0])
+            if parsed_args.availability_range
+            else None,
+            "available_end_time": str(parsed_args.availability_range[1])
+            if parsed_args.availability_range
+            else None,
+            "resource_type": parsed_args.resource_type,
+            "resource_class": parsed_args.resource_class,
         }
 
         for c in cloud_regions:
@@ -107,14 +115,13 @@ class MDCListOffer(command.Lister):
             offers = list(client.offers(**filters))
             for offer in offers:
                 offer.cloud = c.name
-                offer.region = c.config['region_name']
+                offer.region = c.config["region_name"]
                 data += [offer]
 
-        columns = ['cloud', 'region'] + list(OFFER_RESOURCE.fields.keys())
-        labels = ['Cloud', 'Region'] + list(OFFER_RESOURCE.fields.values())
+        columns = ["cloud", "region"] + list(OFFER_RESOURCE.fields.keys())
+        labels = ["Cloud", "Region"] + list(OFFER_RESOURCE.fields.values())
 
-        return (labels,
-                (oscutils.get_item_properties(s, columns) for s in data))
+        return (labels, (oscutils.get_item_properties(s, columns) for s in data))
 
 
 class MDCClaimOffer(command.Lister):
@@ -127,52 +134,53 @@ class MDCClaimOffer(command.Lister):
         parser = super(MDCClaimOffer, self).get_parser(prog_name)
 
         parser.add_argument(
-            "node_count",
-            metavar="<node_count>",
-            help="Number of nodes to claim")
-        parser.add_argument(
-            'start_time',
-            metavar='<start_time>',
-            help="Time when the lease will start.")
-        parser.add_argument(
-            'end_time',
-            metavar='<end_time>',
-            help="Time when the lease will expire.")
-        parser.add_argument(
-            '--clouds',
-            dest='clouds',
-            metavar='<clouds>',
-            nargs="+",
-            help="Specify the cloud to use from clouds.yaml."
+            "node_count", metavar="<node_count>", help="Number of nodes to claim"
         )
         parser.add_argument(
-            '--resource-type',
-            dest='resource_type',
-            required=False,
-            help="Specify offers' resource-type.")
+            "start_time", metavar="<start_time>", help="Time when the lease will start."
+        )
         parser.add_argument(
-            '--resource-class',
-            dest='resource_class',
+            "end_time", metavar="<end_time>", help="Time when the lease will expire."
+        )
+        parser.add_argument(
+            "--clouds",
+            dest="clouds",
+            metavar="<clouds>",
+            nargs="+",
+            help="Specify the cloud to use from clouds.yaml.",
+        )
+        parser.add_argument(
+            "--resource-type",
+            dest="resource_type",
             required=False,
-            help="Specify offers' resource-class.")
+            help="Specify offers' resource-type.",
+        )
+        parser.add_argument(
+            "--resource-class",
+            dest="resource_class",
+            required=False,
+            help="Specify offers' resource-class.",
+        )
 
         return parser
 
     def take_action(self, parsed_args):
-        cloud_regions = openstack.config.loader.OpenStackConfig().\
-            get_all_clouds()
+        cloud_regions = openstack.config.loader.OpenStackConfig().get_all_clouds()
         if parsed_args.clouds:
-            cloud_regions = filter(lambda c: c.name in parsed_args.clouds,
-                                   cloud_regions)
+            cloud_regions = filter(
+                lambda c: c.name in parsed_args.clouds, cloud_regions
+            )
         node_count = int(parsed_args.node_count)
         filters = {
-            'status': 'available',
-            'available_start_time': str(parsed_args.start_time) if
-            parsed_args.start_time else None,
-            'available_end_time': str(parsed_args.end_time) if
-            parsed_args.end_time else None,
-            'resource_type': parsed_args.resource_type,
-            'resource_class': parsed_args.resource_class,
+            "status": "available",
+            "available_start_time": str(parsed_args.start_time)
+            if parsed_args.start_time
+            else None,
+            "available_end_time": str(parsed_args.end_time)
+            if parsed_args.end_time
+            else None,
+            "resource_type": parsed_args.resource_type,
+            "resource_class": parsed_args.resource_class,
         }
 
         available_offers = []
@@ -182,12 +190,11 @@ class MDCClaimOffer(command.Lister):
             for offer in offers:
                 offer.cloud_region = c
                 offer.cloud = c.name
-                offer.region = c.config['region_name']
+                offer.region = c.config["region_name"]
                 available_offers += [offer]
 
         if node_count > len(available_offers):
-            raise exceptions.CommandError(
-                "ERROR: Not enough offers found")
+            raise exceptions.CommandError("ERROR: Not enough offers found")
 
         offers_to_claim = random.sample(available_offers, node_count)
         leases = []
@@ -196,19 +203,20 @@ class MDCClaimOffer(command.Lister):
             try:
                 lease = client.claim_offer(
                     offer.uuid,
-                    **{'start_time': parsed_args.start_time,
-                       'end_time': parsed_args.end_time})
+                    **{
+                        "start_time": parsed_args.start_time,
+                        "end_time": parsed_args.end_time,
+                    },
+                )
                 lease.cloud = offer.cloud
                 lease.region = offer.region
                 leases += [lease]
             except exceptions.CommandError:
                 # offer is no longer available during this time range; continue
                 # but let user know
-                print("Offer %s is no longer available; continuing"
-                      % offer.uuid)
+                print("Offer %s is no longer available; continuing" % offer.uuid)
 
-        columns = ['cloud', 'region'] + list(LEASE_RESOURCE.fields.keys())
-        labels = ['Cloud', 'Region'] + list(LEASE_RESOURCE.fields.values())
+        columns = ["cloud", "region"] + list(LEASE_RESOURCE.fields.keys())
+        labels = ["Cloud", "Region"] + list(LEASE_RESOURCE.fields.values())
 
-        return (labels,
-                (oscutils.get_item_properties(s, columns) for s in leases))
+        return (labels, (oscutils.get_item_properties(s, columns) for s in leases))

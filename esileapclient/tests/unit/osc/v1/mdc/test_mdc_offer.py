@@ -24,7 +24,6 @@ from esileapclient.tests.unit.osc.v1 import fakes
 
 
 class TestMDCOffer(base.TestESILeapCommand):
-
     def setUp(self):
         super(TestMDCOffer, self).setUp()
 
@@ -39,24 +38,23 @@ class TestMDCOfferList(TestMDCOffer):
         class FakeCloudRegion(object):
             def __init__(self, name, region):
                 self.name = name
-                self.config = {'region_name': region}
+                self.config = {"region_name": region}
 
             def get_session(self):
                 return None
 
-        self.cloud1 = FakeCloudRegion('cloud1', 'regionOne')
-        self.cloud2 = FakeCloudRegion('cloud2', 'regionTwo')
+        self.cloud1 = FakeCloudRegion("cloud1", "regionOne")
+        self.cloud2 = FakeCloudRegion("cloud2", "regionTwo")
         self.offer1 = base.FakeResource(copy.deepcopy(fakes.OFFER))
         self.offer2 = base.FakeResource(copy.deepcopy(fakes.OFFER))
         self.cmd = mdc_offer.MDCListOffer(self.app, None)
 
-    @mock.patch('openstack.config.loader.OpenStackConfig.get_all_clouds')
-    @mock.patch.object(connection, 'ESIConnection')
+    @mock.patch("openstack.config.loader.OpenStackConfig.get_all_clouds")
+    @mock.patch.object(connection, "ESIConnection")
     def test_mdc_offer_list(self, mock_conn, mock_clouds):
         mock_clouds.return_value = [self.cloud1, self.cloud2]
         mock_conn.return_value.lease = self.client_mock
-        self.client_mock.offers.side_effect = [[self.offer1],
-                                               [self.offer2]]
+        self.client_mock.offers.side_effect = [[self.offer1], [self.offer2]]
 
         arglist = []
         verifylist = []
@@ -65,17 +63,21 @@ class TestMDCOfferList(TestMDCOffer):
         columns, data = self.cmd.take_action(parsed_args)
 
         filters = {
-            'status': parsed_args.status,
-            'start_time': str(parsed_args.time_range[0]) if
-            parsed_args.time_range else None,
-            'end_time': str(parsed_args.time_range[1]) if
-            parsed_args.time_range else None,
-            'available_start_time': str(parsed_args.availability_range[0]) if
-            parsed_args.availability_range else None,
-            'available_end_time': str(parsed_args.availability_range[1]) if
-            parsed_args.availability_range else None,
-            'resource_type': parsed_args.resource_type,
-            'resource_class': parsed_args.resource_class,
+            "status": parsed_args.status,
+            "start_time": str(parsed_args.time_range[0])
+            if parsed_args.time_range
+            else None,
+            "end_time": str(parsed_args.time_range[1])
+            if parsed_args.time_range
+            else None,
+            "available_start_time": str(parsed_args.availability_range[0])
+            if parsed_args.availability_range
+            else None,
+            "available_end_time": str(parsed_args.availability_range[1])
+            if parsed_args.availability_range
+            else None,
+            "resource_type": parsed_args.resource_type,
+            "resource_class": parsed_args.resource_class,
         }
 
         self.client_mock.offers.assert_called_with(**filters)
@@ -95,53 +97,63 @@ class TestMDCOfferList(TestMDCOffer):
 
         self.assertEqual(collist, list(columns))
 
-        datalist = (('cloud1', 'regionOne',
-                     fakes.offer_uuid,
-                     fakes.lease_resource,
-                     fakes.lease_resource_class,
-                     fakes.offer_lessee,
-                     fakes.lease_start_time,
-                     fakes.lease_end_time,
-                     fakes.lease_status,
-                     json.loads(fakes.lease_availabilities),
-                     ),
-                    ('cloud2', 'regionTwo',
-                     fakes.offer_uuid,
-                     fakes.lease_resource,
-                     fakes.lease_resource_class,
-                     fakes.offer_lessee,
-                     fakes.lease_start_time,
-                     fakes.lease_end_time,
-                     fakes.lease_status,
-                     json.loads(fakes.lease_availabilities),
-                     ))
+        datalist = (
+            (
+                "cloud1",
+                "regionOne",
+                fakes.offer_uuid,
+                fakes.lease_resource,
+                fakes.lease_resource_class,
+                fakes.offer_lessee,
+                fakes.lease_start_time,
+                fakes.lease_end_time,
+                fakes.lease_status,
+                json.loads(fakes.lease_availabilities),
+            ),
+            (
+                "cloud2",
+                "regionTwo",
+                fakes.offer_uuid,
+                fakes.lease_resource,
+                fakes.lease_resource_class,
+                fakes.offer_lessee,
+                fakes.lease_start_time,
+                fakes.lease_end_time,
+                fakes.lease_status,
+                json.loads(fakes.lease_availabilities),
+            ),
+        )
         self.assertEqual(datalist, tuple(data))
 
-    @mock.patch('openstack.config.loader.OpenStackConfig.get_all_clouds')
-    @mock.patch.object(connection, 'ESIConnection')
+    @mock.patch("openstack.config.loader.OpenStackConfig.get_all_clouds")
+    @mock.patch.object(connection, "ESIConnection")
     def test_mdc_offer_list_filter(self, mock_conn, mock_clouds):
         mock_clouds.return_value = [self.cloud1, self.cloud2]
         mock_conn.return_value.lease = self.client_mock
         self.client_mock.offers.return_value = [self.offer2]
 
-        arglist = ['--clouds', 'cloud2']
+        arglist = ["--clouds", "cloud2"]
         verifylist = []
 
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
         columns, data = self.cmd.take_action(parsed_args)
 
         filters = {
-            'status': parsed_args.status,
-            'start_time': str(parsed_args.time_range[0]) if
-            parsed_args.time_range else None,
-            'end_time': str(parsed_args.time_range[1]) if
-            parsed_args.time_range else None,
-            'available_start_time': str(parsed_args.availability_range[0]) if
-            parsed_args.availability_range else None,
-            'available_end_time': str(parsed_args.availability_range[1]) if
-            parsed_args.availability_range else None,
-            'resource_type': parsed_args.resource_type,
-            'resource_class': parsed_args.resource_class,
+            "status": parsed_args.status,
+            "start_time": str(parsed_args.time_range[0])
+            if parsed_args.time_range
+            else None,
+            "end_time": str(parsed_args.time_range[1])
+            if parsed_args.time_range
+            else None,
+            "available_start_time": str(parsed_args.availability_range[0])
+            if parsed_args.availability_range
+            else None,
+            "available_end_time": str(parsed_args.availability_range[1])
+            if parsed_args.availability_range
+            else None,
+            "resource_type": parsed_args.resource_type,
+            "resource_class": parsed_args.resource_class,
         }
 
         self.client_mock.offers.assert_called_with(**filters)
@@ -161,16 +173,20 @@ class TestMDCOfferList(TestMDCOffer):
 
         self.assertEqual(collist, list(columns))
 
-        datalist = (('cloud2', 'regionTwo',
-                     fakes.offer_uuid,
-                     fakes.lease_resource,
-                     fakes.lease_resource_class,
-                     fakes.offer_lessee,
-                     fakes.lease_start_time,
-                     fakes.lease_end_time,
-                     fakes.lease_status,
-                     json.loads(fakes.lease_availabilities),
-                     ),)
+        datalist = (
+            (
+                "cloud2",
+                "regionTwo",
+                fakes.offer_uuid,
+                fakes.lease_resource,
+                fakes.lease_resource_class,
+                fakes.offer_lessee,
+                fakes.lease_start_time,
+                fakes.lease_end_time,
+                fakes.lease_status,
+                json.loads(fakes.lease_availabilities),
+            ),
+        )
         self.assertEqual(datalist, tuple(data))
 
 
@@ -181,13 +197,13 @@ class TestMDCOfferClaim(TestMDCOffer):
         class FakeCloudRegion(object):
             def __init__(self, name, region):
                 self.name = name
-                self.config = {'region_name': region}
+                self.config = {"region_name": region}
 
             def get_session(self):
                 return None
 
-        self.cloud1 = FakeCloudRegion('cloud1', 'regionOne')
-        self.cloud2 = FakeCloudRegion('cloud2', 'regionTwo')
+        self.cloud1 = FakeCloudRegion("cloud1", "regionOne")
+        self.cloud2 = FakeCloudRegion("cloud2", "regionTwo")
         self.offer1 = base.FakeResource(copy.deepcopy(fakes.OFFER))
         self.offer2 = base.FakeResource(copy.deepcopy(fakes.OFFER))
         self.offer3 = base.FakeResource(copy.deepcopy(fakes.OFFER))
@@ -196,28 +212,33 @@ class TestMDCOfferClaim(TestMDCOffer):
         self.lease3 = base.FakeResource(copy.deepcopy(fakes.LEASE))
         self.cmd = mdc_offer.MDCClaimOffer(self.app, None)
 
-    @mock.patch('openstack.config.loader.OpenStackConfig.get_all_clouds')
-    @mock.patch.object(connection, 'ESIConnection')
+    @mock.patch("openstack.config.loader.OpenStackConfig.get_all_clouds")
+    @mock.patch.object(connection, "ESIConnection")
     def test_mdc_offer_claim(self, mock_conn, mock_clouds):
         mock_clouds.return_value = [self.cloud1, self.cloud2]
         mock_conn.return_value.lease = self.client_mock
-        self.client_mock.offers.side_effect = [[self.offer1, self.offer2],
-                                               [self.offer3]]
-        self.client_mock.claim_offer.side_effect = [self.lease1, self.lease2,
-                                                    self.lease3]
+        self.client_mock.offers.side_effect = [
+            [self.offer1, self.offer2],
+            [self.offer3],
+        ]
+        self.client_mock.claim_offer.side_effect = [
+            self.lease1,
+            self.lease2,
+            self.lease3,
+        ]
 
-        arglist = ['3', fakes.lease_start_time, fakes.lease_end_time]
+        arglist = ["3", fakes.lease_start_time, fakes.lease_end_time]
         verifylist = []
 
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
         columns, data = self.cmd.take_action(parsed_args)
 
         list_filters = {
-            'status': 'available',
-            'available_start_time': str(parsed_args.start_time),
-            'available_end_time': str(parsed_args.end_time),
-            'resource_type': parsed_args.resource_type,
-            'resource_class': parsed_args.resource_class,
+            "status": "available",
+            "available_start_time": str(parsed_args.start_time),
+            "available_end_time": str(parsed_args.end_time),
+            "resource_type": parsed_args.resource_type,
+            "resource_class": parsed_args.resource_class,
         }
 
         self.client_mock.offers.assert_called_with(**list_filters)
@@ -225,7 +246,8 @@ class TestMDCOfferClaim(TestMDCOffer):
         self.client_mock.claim_offer.assert_called_with(
             fakes.offer_uuid,
             start_time=str(parsed_args.start_time),
-            end_time=str(parsed_args.end_time))
+            end_time=str(parsed_args.end_time),
+        )
 
         collist = [
             "Cloud",
@@ -243,62 +265,72 @@ class TestMDCOfferClaim(TestMDCOffer):
 
         self.assertEqual(collist, list(columns))
 
-        cloud1_lease = ('cloud1', 'regionOne',
-                        fakes.lease_uuid,
-                        fakes.lease_resource,
-                        fakes.lease_resource_class,
-                        fakes.lease_project,
-                        fakes.lease_start_time,
-                        fakes.lease_end_time,
-                        fakes.offer_uuid,
-                        fakes.lease_status,
-                        fakes.lease_purpose
-                        )
-        cloud2_lease = ('cloud2', 'regionTwo',
-                        fakes.lease_uuid,
-                        fakes.lease_resource,
-                        fakes.lease_resource_class,
-                        fakes.lease_project,
-                        fakes.lease_start_time,
-                        fakes.lease_end_time,
-                        fakes.offer_uuid,
-                        fakes.lease_status,
-                        fakes.lease_purpose
-                        )
+        cloud1_lease = (
+            "cloud1",
+            "regionOne",
+            fakes.lease_uuid,
+            fakes.lease_resource,
+            fakes.lease_resource_class,
+            fakes.lease_project,
+            fakes.lease_start_time,
+            fakes.lease_end_time,
+            fakes.offer_uuid,
+            fakes.lease_status,
+            fakes.lease_purpose,
+        )
+        cloud2_lease = (
+            "cloud2",
+            "regionTwo",
+            fakes.lease_uuid,
+            fakes.lease_resource,
+            fakes.lease_resource_class,
+            fakes.lease_project,
+            fakes.lease_start_time,
+            fakes.lease_end_time,
+            fakes.offer_uuid,
+            fakes.lease_status,
+            fakes.lease_purpose,
+        )
 
         parsed_data = tuple(data)
         self.assertEqual(3, len(parsed_data))
         self.assertEqual(2, parsed_data.count(cloud1_lease))
         self.assertEqual(1, parsed_data.count(cloud2_lease))
 
-    @mock.patch('openstack.config.loader.OpenStackConfig.get_all_clouds')
-    @mock.patch.object(connection, 'ESIConnection')
+    @mock.patch("openstack.config.loader.OpenStackConfig.get_all_clouds")
+    @mock.patch.object(connection, "ESIConnection")
     def test_mdc_offer_claim_filter(self, mock_conn, mock_clouds):
         mock_clouds.return_value = [self.cloud1, self.cloud2]
         mock_conn.return_value.lease = self.client_mock
         self.client_mock.offers.return_value = [self.offer1, self.offer2]
         self.client_mock.claim_offer.side_effect = [self.lease1, self.lease2]
 
-        arglist = ['2', fakes.lease_start_time, fakes.lease_end_time,
-                   '--clouds', 'cloud1']
+        arglist = [
+            "2",
+            fakes.lease_start_time,
+            fakes.lease_end_time,
+            "--clouds",
+            "cloud1",
+        ]
         verifylist = []
 
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
         columns, data = self.cmd.take_action(parsed_args)
 
         list_filters = {
-            'status': 'available',
-            'available_start_time': str(parsed_args.start_time),
-            'available_end_time': str(parsed_args.end_time),
-            'resource_type': parsed_args.resource_type,
-            'resource_class': parsed_args.resource_class,
+            "status": "available",
+            "available_start_time": str(parsed_args.start_time),
+            "available_end_time": str(parsed_args.end_time),
+            "resource_type": parsed_args.resource_type,
+            "resource_class": parsed_args.resource_class,
         }
 
         self.client_mock.offers.assert_called_with(**list_filters)
         self.client_mock.claim_offer.assert_called_with(
             fakes.offer_uuid,
             start_time=str(parsed_args.start_time),
-            end_time=str(parsed_args.end_time))
+            end_time=str(parsed_args.end_time),
+        )
 
         collist = [
             "Cloud",
@@ -316,43 +348,46 @@ class TestMDCOfferClaim(TestMDCOffer):
 
         self.assertEqual(collist, list(columns))
 
-        cloud1_lease = ('cloud1', 'regionOne',
-                        fakes.lease_uuid,
-                        fakes.lease_resource,
-                        fakes.lease_resource_class,
-                        fakes.lease_project,
-                        fakes.lease_start_time,
-                        fakes.lease_end_time,
-                        fakes.offer_uuid,
-                        fakes.lease_status,
-                        fakes.lease_purpose,
-                        )
+        cloud1_lease = (
+            "cloud1",
+            "regionOne",
+            fakes.lease_uuid,
+            fakes.lease_resource,
+            fakes.lease_resource_class,
+            fakes.lease_project,
+            fakes.lease_start_time,
+            fakes.lease_end_time,
+            fakes.offer_uuid,
+            fakes.lease_status,
+            fakes.lease_purpose,
+        )
 
         parsed_data = tuple(data)
         self.assertEqual(2, len(parsed_data))
         self.assertEqual(2, parsed_data.count(cloud1_lease))
 
-    @mock.patch('openstack.config.loader.OpenStackConfig.get_all_clouds')
-    @mock.patch.object(connection, 'ESIConnection')
+    @mock.patch("openstack.config.loader.OpenStackConfig.get_all_clouds")
+    @mock.patch.object(connection, "ESIConnection")
     def test_mdc_offer_claim_not_enough_offers(self, mock_conn, mock_clouds):
         mock_clouds.return_value = [self.cloud1, self.cloud2]
         mock_conn.return_value.lease = self.client_mock
-        self.client_mock.offers.side_effect = [[self.offer1, self.offer2],
-                                               [self.offer3]]
+        self.client_mock.offers.side_effect = [
+            [self.offer1, self.offer2],
+            [self.offer3],
+        ]
 
-        arglist = ['4', fakes.lease_start_time, fakes.lease_end_time]
+        arglist = ["4", fakes.lease_start_time, fakes.lease_end_time]
         verifylist = []
 
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
-        self.assertRaises(exceptions.CommandError,
-                          self.cmd.take_action, parsed_args)
+        self.assertRaises(exceptions.CommandError, self.cmd.take_action, parsed_args)
 
         list_filters = {
-            'status': 'available',
-            'available_start_time': str(parsed_args.start_time),
-            'available_end_time': str(parsed_args.end_time),
-            'resource_type': parsed_args.resource_type,
-            'resource_class': parsed_args.resource_class,
+            "status": "available",
+            "available_start_time": str(parsed_args.start_time),
+            "available_end_time": str(parsed_args.end_time),
+            "resource_type": parsed_args.resource_type,
+            "resource_class": parsed_args.resource_class,
         }
 
         self.client_mock.offers.assert_called_with(**list_filters)

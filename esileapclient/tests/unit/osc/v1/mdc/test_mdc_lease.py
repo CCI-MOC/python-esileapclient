@@ -21,7 +21,6 @@ from esileapclient.tests.unit.osc.v1 import fakes
 
 
 class TestMDCLease(base.TestESILeapCommand):
-
     def setUp(self):
         super(TestMDCLease, self).setUp()
 
@@ -36,24 +35,23 @@ class TestMDCLeaseList(TestMDCLease):
         class FakeCloudRegion(object):
             def __init__(self, name, region):
                 self.name = name
-                self.config = {'region_name': region}
+                self.config = {"region_name": region}
 
             def get_session(self):
                 return None
 
-        self.cloud1 = FakeCloudRegion('cloud1', 'regionOne')
-        self.cloud2 = FakeCloudRegion('cloud2', 'regionTwo')
+        self.cloud1 = FakeCloudRegion("cloud1", "regionOne")
+        self.cloud2 = FakeCloudRegion("cloud2", "regionTwo")
         self.lease1 = base.FakeResource(copy.deepcopy(fakes.LEASE))
         self.lease2 = base.FakeResource(copy.deepcopy(fakes.LEASE))
         self.cmd = mdc_lease.MDCListLease(self.app, None)
 
-    @mock.patch('openstack.config.loader.OpenStackConfig.get_all_clouds')
-    @mock.patch.object(connection, 'ESIConnection')
+    @mock.patch("openstack.config.loader.OpenStackConfig.get_all_clouds")
+    @mock.patch.object(connection, "ESIConnection")
     def test_mdc_lease_list(self, mock_conn, mock_clouds):
         mock_clouds.return_value = [self.cloud1, self.cloud2]
         mock_conn.return_value.lease = self.client_mock
-        self.client_mock.leases.side_effect = [[self.lease1],
-                                               [self.lease2]]
+        self.client_mock.leases.side_effect = [[self.lease1], [self.lease2]]
 
         arglist = []
         verifylist = []
@@ -62,14 +60,16 @@ class TestMDCLeaseList(TestMDCLease):
         columns, data = self.cmd.take_action(parsed_args)
 
         filters = {
-            'status': parsed_args.status,
-            'start_time': str(parsed_args.time_range[0]) if
-            parsed_args.time_range else None,
-            'end_time': str(parsed_args.time_range[1]) if
-            parsed_args.time_range else None,
-            'resource_type': parsed_args.resource_type,
-            'resource_class': parsed_args.resource_class,
-            'purpose': parsed_args.purpose,
+            "status": parsed_args.status,
+            "start_time": str(parsed_args.time_range[0])
+            if parsed_args.time_range
+            else None,
+            "end_time": str(parsed_args.time_range[1])
+            if parsed_args.time_range
+            else None,
+            "resource_type": parsed_args.resource_type,
+            "resource_class": parsed_args.resource_class,
+            "purpose": parsed_args.purpose,
         }
         self.client_mock.leases.assert_called_with(**filters)
 
@@ -89,52 +89,60 @@ class TestMDCLeaseList(TestMDCLease):
 
         self.assertEqual(collist, list(columns))
 
-        datalist = (('cloud1', 'regionOne',
-                     fakes.lease_uuid,
-                     fakes.lease_resource,
-                     fakes.lease_resource_class,
-                     fakes.lease_project,
-                     fakes.lease_start_time,
-                     fakes.lease_end_time,
-                     fakes.offer_uuid,
-                     fakes.lease_status,
-                     fakes.lease_purpose,
-                     ),
-                    ('cloud2', 'regionTwo',
-                     fakes.lease_uuid,
-                     fakes.lease_resource,
-                     fakes.lease_resource_class,
-                     fakes.lease_project,
-                     fakes.lease_start_time,
-                     fakes.lease_end_time,
-                     fakes.offer_uuid,
-                     fakes.lease_status,
-                     fakes.lease_purpose,
-                     ))
+        datalist = (
+            (
+                "cloud1",
+                "regionOne",
+                fakes.lease_uuid,
+                fakes.lease_resource,
+                fakes.lease_resource_class,
+                fakes.lease_project,
+                fakes.lease_start_time,
+                fakes.lease_end_time,
+                fakes.offer_uuid,
+                fakes.lease_status,
+                fakes.lease_purpose,
+            ),
+            (
+                "cloud2",
+                "regionTwo",
+                fakes.lease_uuid,
+                fakes.lease_resource,
+                fakes.lease_resource_class,
+                fakes.lease_project,
+                fakes.lease_start_time,
+                fakes.lease_end_time,
+                fakes.offer_uuid,
+                fakes.lease_status,
+                fakes.lease_purpose,
+            ),
+        )
         self.assertEqual(datalist, tuple(data))
 
-    @mock.patch('openstack.config.loader.OpenStackConfig.get_all_clouds')
-    @mock.patch.object(connection, 'ESIConnection')
+    @mock.patch("openstack.config.loader.OpenStackConfig.get_all_clouds")
+    @mock.patch.object(connection, "ESIConnection")
     def test_mdc_lease_list_filter(self, mock_conn, mock_clouds):
         mock_clouds.return_value = [self.cloud1, self.cloud2]
         mock_conn.return_value.lease = self.client_mock
         self.client_mock.leases.return_value = [self.lease2]
 
-        arglist = ['--clouds', 'cloud2']
+        arglist = ["--clouds", "cloud2"]
         verifylist = []
 
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
         columns, data = self.cmd.take_action(parsed_args)
 
         filters = {
-            'status': parsed_args.status,
-            'start_time': str(parsed_args.time_range[0]) if
-            parsed_args.time_range else None,
-            'end_time': str(parsed_args.time_range[1]) if
-            parsed_args.time_range else None,
-            'resource_type': parsed_args.resource_type,
-            'resource_class': parsed_args.resource_class,
-            'purpose': parsed_args.purpose,
+            "status": parsed_args.status,
+            "start_time": str(parsed_args.time_range[0])
+            if parsed_args.time_range
+            else None,
+            "end_time": str(parsed_args.time_range[1])
+            if parsed_args.time_range
+            else None,
+            "resource_type": parsed_args.resource_type,
+            "resource_class": parsed_args.resource_class,
+            "purpose": parsed_args.purpose,
         }
 
         self.client_mock.leases.assert_called_with(**filters)
@@ -155,15 +163,19 @@ class TestMDCLeaseList(TestMDCLease):
 
         self.assertEqual(collist, list(columns))
 
-        datalist = (('cloud2', 'regionTwo',
-                     fakes.lease_uuid,
-                     fakes.lease_resource,
-                     fakes.lease_resource_class,
-                     fakes.lease_project,
-                     fakes.lease_start_time,
-                     fakes.lease_end_time,
-                     fakes.offer_uuid,
-                     fakes.lease_status,
-                     fakes.lease_purpose,
-                     ),)
+        datalist = (
+            (
+                "cloud2",
+                "regionTwo",
+                fakes.lease_uuid,
+                fakes.lease_resource,
+                fakes.lease_resource_class,
+                fakes.lease_project,
+                fakes.lease_start_time,
+                fakes.lease_end_time,
+                fakes.offer_uuid,
+                fakes.lease_status,
+                fakes.lease_purpose,
+            ),
+        )
         self.assertEqual(datalist, tuple(data))
