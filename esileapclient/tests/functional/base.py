@@ -121,7 +121,7 @@ class ESIBaseTestClass(base.ClientTestBase):
             'domain': 'default'
         }
 
-        if roles is []:
+        if not roles:
             raise ValueError('No roles specified when initializing dummy \
                               project %s' % name)
         elif type(roles) is str:
