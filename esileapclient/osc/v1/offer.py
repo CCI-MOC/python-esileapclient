@@ -280,13 +280,13 @@ class ClaimOffer(command.ShowOne):
             "--end-time",
             dest="end_time",
             required=False,
-            help="Time when the offer will expire and no longer be 'available'.",
+            help="Time when the lease will end'.",
         )
         parser.add_argument(
             "--start-time",
             dest="start_time",
             required=False,
-            help="Time when the offer will be made 'available'.",
+            help="Time when the lease will begin.",
         )
         parser.add_argument(
             "--properties",
